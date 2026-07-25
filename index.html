@@ -430,7 +430,8 @@ h3{font-size:14.5px;margin:16px 0 6px;font-weight:800}
 .chbadge{display:inline-flex;align-items:center;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:6px}
 .chb-hitori{background:var(--primary-soft);color:var(--primary-d)}
 .chb-polepole{background:#efe6ff;color:#7a4fd0}
-@media(prefers-color-scheme:dark){.chb-hitori{background:#2a2f45;color:#b9c4ff}.chb-polepole{background:#2e2740;color:#c9b3ff}}
+.chb-odo{background:#e3f3ff;color:#2b7fbf}
+@media(prefers-color-scheme:dark){.chb-hitori{background:#2a2f45;color:#b9c4ff}.chb-polepole{background:#2e2740;color:#c9b3ff}.chb-odo{background:#243642;color:#a9d6f5}}
 .segbtns{display:flex;gap:8px;margin:10px 0}
 .segbtn{padding:7px 16px;border:1.5px solid var(--line);border-radius:999px;background:var(--panel);color:var(--tx);font-weight:700;font-size:13px;cursor:pointer}
 .segbtn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -572,8 +573,8 @@ function ic(name,size,fill){size=size||20;const p=ICONS[name]||ICONS.check;
 const procIcon=(p)=>({"床":"floor","壁紙クロス":"wall","塗装":"brush","電気":"zap","水回り":"droplet","建具・窓":"window","足場・下地":"layers","洗浄":"droplet","解体・撤去":"hammer","設備・仕上げ":"tool"}[p]||"tool");
 
 /* ---- 集計 ---- */
-const HV=()=>D.videos.filter(v=>v.channel!=='polepole');      // HitoriDiy(画像リッチ)
-const PV=()=>D.videos.filter(v=>v.channel==='polepole');      // ポレポレ(リスト)
+const HV=()=>D.videos.filter(v=>(v.channel||'hitori')==='hitori');  // HitoriDiy(画像リッチ)
+const PV=()=>D.videos.filter(v=>v.channel==='polepole');            // ポレポレ(リスト)
 const videosByRoom=(r)=>HV().filter(v=>v.rooms.includes(r));
 const videosByProcess=(p)=>HV().filter(v=>v.processes.includes(p));
 function roomsPresent(){const s=new Set();HV().forEach(v=>v.rooms.forEach(r=>s.add(r)));return D.roomOrder.filter(r=>s.has(r)).concat([...s].filter(r=>!D.roomOrder.includes(r)))}
@@ -585,12 +586,14 @@ function conceptOf(phrase,kind){
   for(const c of list){ if((c.keywords||[]).some(k=>k&&p.includes(k))) return c; }
   return null;
 }
+const CHLABEL={hitori:'ひとり流',polepole:'ポレポレ流',odo:'大家研究所流'};
+function nCh(){return Object.keys(D.channels||{hitori:1,polepole:1}).length;}
 function commonTag(phrase,kind){
   const c=conceptOf(phrase,kind); if(!c) return '';
   const both=c.channels.length>=2;
-  const only=c.channels[0]==='polepole'?'ポレポレ流':'ひとり流';
-  return both?`<span class="ctag ct-std" title="${esc(c.name)}：両チャンネルで採用">定番</span>`
-             :`<span class="ctag ct-uniq" title="${esc(c.name)}：${only}">独自</span>`;
+  const only=CHLABEL[c.channels[0]]||'独自';
+  return both?`<span class="ctag ct-std" title="${esc(c.name)}：${c.channels.length}/${nCh()}チャンネルで採用">定番 ${c.channels.length}/${nCh()}</span>`
+             :`<span class="ctag ct-uniq" title="${esc(c.name)}：${only}のみ">独自・${esc(only)}</span>`;
 }
 function chanBadge(v){const c=(D.channels||{})[v.channel||'hitori']||{};return `<span class="chbadge chb-${v.channel||'hitori'}">${esc(c.handle||'')}</span>`;}
 
@@ -652,7 +655,7 @@ function lightbox(src){const l=document.getElementById('lightbox'),i=document.ge
 function closeLightbox(){const l=document.getElementById('lightbox');if(l)l.classList.remove('on')}
 /* ---- 手順HTML（動画ページ・部屋アコーディオン共通） ---- */
 function stepsHtml(v){
-  const isPole=v.channel==='polepole';
+  const isPole=(v.channel||'hitori')!=='hitori';
   return v.steps.map((s,i)=>{
     const segs=isPole
       ? (s.timeSec?`<a class="seg" href="${ytUrl(v.id,s.timeSec)}" target="_blank" rel="noopener">${ic('ext',12)}${fmt(s.timeSec)}〜</a>`:'')
@@ -794,7 +797,7 @@ function simCost(id){
 }
 
 /* ---- サイドナビ ---- */
-const NAVS=[['','home','ホーム'],['projects','book','まとめ'],['rooms','door','部屋から'],['procs','tool','工程から'],['compare','search','定番/独自'],['channel/polepole','tool','ポレポレDIY'],['estimate','route','見積り'],['flow','map','全体の順番'],['fails','alert','しくじり'],['troubles','help','困りごと'],['shopping','cart','買い物・道具']];
+const NAVS=[['','home','ホーム'],['projects','book','まとめ'],['rooms','door','部屋から'],['procs','tool','工程から'],['compare','search','定番/独自'],['channel/polepole','tool','ポレポレDIY'],['channel/odo','tool','DIY大家研究所'],['estimate','route','見積り'],['flow','map','全体の順番'],['fails','alert','しくじり'],['troubles','help','困りごと'],['shopping','cart','買い物・道具']];
 function paintNav(active){
   document.getElementById('nav').innerHTML=NAVS.map(([r,i,t])=>
     `<div class="navlink ${active===r?'active':''}" onclick="go('${r}')">${ic(i,20)}<span class="txt">${t}</span></div>`).join('');
@@ -858,8 +861,9 @@ function home(){
     ['rooms','door','t-violet','部屋から探す','今から手をつける部屋を選ぶ'],
     ['procs','tool','t-mint','工程から探す','床・壁紙・塗装など作業から'],
     ['flow','map','t-amber','全体の順番','家1軒を仕上げる時系列'],
-    ['compare','search','t-mint','定番 vs 独自','2チャンネルで一般的か判定'],
+    ['compare','search','t-mint','定番 vs 独自','3チャンネルで一般的か判定'],
     ['channel/polepole','tool','t-violet','ポレポレDIY','もう1チャンネル205本の手順'],
+    ['channel/odo','tool','t-sky','DIY大家研究所','賃貸大家DIY 55本の手順'],
     ['fails','alert','t-pink','しくじり図鑑','先人の失敗・授業料に学ぶ'],
     ['saves','bulb','t-mint','節約テク集','安く上げる・代用・廃材活用'],
     ['gallery','star','t-amber','ビフォーアフター','126本の変化を一覧'],
@@ -877,7 +881,7 @@ function home(){
   }).join('');
   render(`<div class="crumb">START</div>
   <h1>まずここから</h1>
-  <div class="lead">やりたいことに一番近い入口を選ぶだけ。分析元：<a href="${(D.channels.hitori||{}).url}" target="_blank">ひとりでできるマンDIY</a>（画像つき127本）＋<a href="${(D.channels.polepole||{}).url}" target="_blank">ポレポレDIY</a>（205本）＝計${D.videos.length}本。<a onclick="go('compare')">2チャンネル比較で「その作業が一般的か」も分かります ${ic('chevron',13)}</a></div>
+  <div class="lead">やりたいことに一番近い入口を選ぶだけ。分析元：<a href="${(D.channels.hitori||{}).url}" target="_blank">ひとりでできるマンDIY</a>（画像つき127本）＋<a href="${(D.channels.polepole||{}).url}" target="_blank">ポレポレDIY</a>（205本）＋<a href="${(D.channels.odo||{}).url}" target="_blank">DIY大家研究所</a>（55本）＝計${D.videos.length}本。<a onclick="go('compare')">${Object.keys(D.channels||{}).length}チャンネル比較で「その作業が一般的か」も分かります ${ic('chevron',13)}</a></div>
   ${goalMethodHtml()}
   <div class="lead" style="margin-top:-2px">物件ごとの「完成イメージ→大まかな流れ→各工程の詳細」は <a onclick="go('projects')">まとめ（物件別）${ic('chevron',13)}</a> へ。</div>
   <div class="grid">${cards}</div>
@@ -1047,8 +1051,8 @@ function videoPage(id){
     <h2 id="s-flow"><span class="bar"></span>全体の順番</h2><div class="flowline">${flow}</div>
     ${(v.methods&&v.methods.length)?`<h2 id="s-method"><span class="bar"></span>この動画の工法（<span class="ctag ct-std">定番</span>=両チャンネル共通／<span class="ctag ct-uniq">独自</span>=その人の流儀）</h2>
       <div class="methodlist">${v.methods.map(m=>`<div class="mrow">${commonTag(m,'method')||'<span class="ctag ct-none">—</span>'}<span>${gloss(esc(m))}</span></div>`).join('')}<div class="muted" style="margin-top:6px;font-size:12px"><a onclick="go('compare')">${ic('search',13)} 定番/独自の一覧を見る</a></div></div>`:''}
-    <h2 id="s-steps"><span class="bar"></span>各作業の手順${v.channel==='polepole'?'（時間リンクでYouTubeへ）':'（画像・区間ボタンで頭出し）'}</h2>
-    ${v.channel==='polepole'?'':`<button class="dobtn" onclick="go('do/${v.id}/0')">${ic('play',15,true)} 現場モードで開く（1作業ずつ進める）</button>`}${steps}
+    <h2 id="s-steps"><span class="bar"></span>各作業の手順${(v.channel||'hitori')!=='hitori'?'（時間リンクでYouTubeへ）':'（画像・区間ボタンで頭出し）'}</h2>
+    ${(v.channel||'hitori')!=='hitori'?'':`<button class="dobtn" onclick="go('do/${v.id}/0')">${ic('play',15,true)} 現場モードで開く（1作業ずつ進める）</button>`}${steps}
     <h2 id="s-tools"><span class="bar"></span>道具・材料</h2><div class="tablewrap"><table class="tbl"><tr><th>品目</th><th>目安</th><th>メモ</th></tr>${tools}</table></div>
     ${renderCost(v)}
     ${(v.time&&v.time.waits&&v.time.waits.length)?`<h2 id="s-wait"><span class="bar"></span>所要時間・待ち時間</h2><div class="lead">実作業の目安：<b>${esc(v.time.label||'')}</b>（下は乾燥・養生などの待ち時間）</div>${waitsHtml(v)}`:''}
@@ -1445,22 +1449,26 @@ function conceptExamples(c,kind){
 }
 function renderCompare(){
   const kind=_cmpKind;
+  const N=nCh();
   const cs=((D.xdict||{})[kind]||{concepts:[]}).concepts.slice();
-  const std=cs.filter(c=>c.channels.length>=2);
-  const uH=cs.filter(c=>c.channels.length===1&&c.channels[0]==='hitori');
-  const uP=cs.filter(c=>c.channels.length===1&&c.channels[0]==='polepole');
+  const std=cs.filter(c=>c.channels.length>=2).sort((a,b)=>b.channels.length-a.channels.length);
+  const chs=Object.keys(D.channels||{});
   const card=(c)=>{const ex=conceptExamples(c,kind);
     const exl=ex.slice(0,4).map(v=>`<a onclick="go('video/${v.id}')" class="cmp-ex chb-${v.channel}">${esc((D.channels[v.channel]||{}).handle||'')}</a>`).join('');
-    return `<div class="cmp-item"><div class="cmp-h"><b>${esc(c.name)}</b>${c.channels.length>=2?'<span class="ctag ct-std">定番</span>':`<span class="ctag ct-uniq">独自・${c.channels[0]==='polepole'?'ポレポレ流':'ひとり流'}</span>`}</div><div class="cmp-note">${esc(c.note||'')}</div><div class="cmp-exs">${exl}</div></div>`;};
+    const tag=c.channels.length>=2?`<span class="ctag ct-std">定番 ${c.channels.length}/${N}</span>`:`<span class="ctag ct-uniq">独自・${esc(CHLABEL[c.channels[0]]||'')}</span>`;
+    return `<div class="cmp-item"><div class="cmp-h"><b>${esc(c.name)}</b>${tag}</div><div class="cmp-note">${esc(c.note||'')}</div><div class="cmp-exs">${exl}</div></div>`;};
   const seg=(k,label)=>`<button class="segbtn ${_cmpKind===k?'on':''}" onclick="cmpKind('${k}')">${label}</button>`;
-  render(`${cr(clink('','START'),'定番 vs 独自')}<h1>定番 vs 独自（2チャンネル比較）</h1>
-   <div class="lead">2つのDIYチャンネル（<b>ひとりでできるマンDIY</b>／<b>ポレポレDIY</b>）の${cs.length}の${kind==='methods'?'工法・技法':'資材'}を横断で名寄せ。<b>両方が使う＝定番（一般的）</b>、<b>片方だけ＝その人の流儀</b>。</div>
+  const chNames=chs.map(k=>(D.channels[k]||{}).name).join('／');
+  const uniqSecs=chs.map(k=>{const u=cs.filter(c=>c.channels.length===1&&c.channels[0]===k);
+    return u.length?`<h2 style="margin-top:20px"><span class="bar"></span>${esc((D.channels[k]||{}).name)} だけの流儀（独自）</h2><div class="cmp-grid">${u.map(card).join('')}</div>`:'';}).join('');
+  const statChips=`<span class="ctag ct-std">定番(2ch+) ${std.length}</span>`+chs.map(k=>`<span class="ctag ct-uniq">独自・${esc(CHLABEL[k]||k)} ${cs.filter(c=>c.channels.length===1&&c.channels[0]===k).length}</span>`).join('');
+  render(`${cr(clink('','START'),'定番 vs 独自')}<h1>定番 vs 独自（${N}チャンネル比較）</h1>
+   <div class="lead">${N}つのDIY大家チャンネル（${esc(chNames)}）の${cs.length}の${kind==='methods'?'工法・技法':'資材'}を横断で名寄せ。<b>複数が使う＝定番（一般的）</b>、<b>1つだけ＝その人の流儀</b>。数字は「採用チャンネル数／${N}」。</div>
    <div class="segbtns">${seg('methods','工法・技法')}${seg('materials','資材')}</div>
-   <div class="cmp-stat"><span class="ctag ct-std">定番 ${std.length}</span><span class="ctag ct-uniq">独自・ひとり流 ${uH.length}</span><span class="ctag ct-uniq">独自・ポレポレ流 ${uP.length}</span></div>
-   <h2 style="margin-top:18px"><span class="bar"></span>定番（両チャンネル共通＝一般的な${kind==='methods'?'作業':'資材'}）</h2>
+   <div class="cmp-stat">${statChips}</div>
+   <h2 style="margin-top:18px"><span class="bar"></span>定番（複数チャンネル共通＝一般的な${kind==='methods'?'作業':'資材'}）</h2>
    <div class="cmp-grid">${std.map(card).join('')}</div>
-   ${uH.length?`<h2 style="margin-top:20px"><span class="bar"></span>ひとりでできるマンDIY 独自</h2><div class="cmp-grid">${uH.map(card).join('')}</div>`:''}
-   ${uP.length?`<h2 style="margin-top:20px"><span class="bar"></span>ポレポレDIY 独自</h2><div class="cmp-grid">${uP.map(card).join('')}</div>`:''}`);
+   ${uniqSecs}`);
 }
 /* ===== チャンネル別（ポレポレDIY） ===== */
 function channelPage(ch){
