@@ -1,0 +1,1453 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>リフォーム手順書 — ひとりでできるマンDIY</title>
+<style>
+:root,:root[data-theme="light"]{
+  --bg:#eef0f8; --panel:#ffffff; --panel2:#eef1f8; --ink:#141620; --sub:#515770; --line:#dfe2ee;
+  --primary:#5a45e0; --primary-d:#4632c4; --primary-soft:#e7e3fc; --chip-ink:#3f4560;
+  --mint:#0a9d92; --mint-soft:#dbf5f2; --amber:#c9822a; --amber-soft:#fbeed6;
+  --sky:#2b7fe0; --sky-soft:#e2eefd; --pink:#d83f7c; --pink-soft:#fce1ec;
+  --danger:#d83a45; --danger-soft:#fce4e6;
+  --radius:20px; --shadow:0 1px 2px rgba(30,32,60,.05), 0 8px 24px rgba(30,32,60,.07);
+}
+:root[data-theme="dark"]{
+  --bg:#0e1017; --panel:#191c27; --panel2:#232734; --ink:#f2f4fb; --sub:#aeb4c8; --line:#2d3242;
+  --primary:#9686f7; --primary-d:#b6abfa; --primary-soft:#2a2447; --chip-ink:#c7cbdb;
+  --mint:#37d6c8; --mint-soft:#12302e; --amber:#f0b45c; --amber-soft:#33290f;
+  --sky:#63acf8; --sky-soft:#122840; --pink:#f77aa6; --pink-soft:#331726;
+  --danger:#f5737d; --danger-soft:#331b1f;
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 12px 30px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.75;-webkit-font-smoothing:antialiased;letter-spacing:.01em}
+a{color:var(--primary-d);text-decoration:none;cursor:pointer}
+a:hover{opacity:.85}
+.ic{display:inline-block;vertical-align:middle;flex:none}
+
+/* ===== レイアウト ===== */
+.shell{display:grid;grid-template-columns:264px minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:20px 16px;display:flex;flex-direction:column;gap:4px}
+.main{min-width:0}
+.container{max-width:960px;margin:0 auto;padding:30px 30px 100px}
+/* モバイル用トップバー & ドロワー背景（既定は非表示） */
+.mtop{display:none;align-items:center;gap:10px;position:sticky;top:0;z-index:40;background:var(--panel);border-bottom:1px solid var(--line);padding:10px 14px}
+.mtop .mbrand{display:flex;align-items:center;gap:10px;cursor:pointer}
+.mtop .mbrand .logo{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--primary),#8f7bf5);display:grid;place-items:center;color:#fff}
+.mtop .mbrand b{font-size:14px}
+.hamb{margin-left:auto;width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--ink);cursor:pointer}
+.backdrop{display:none;position:fixed;inset:0;background:rgba(12,14,28,.5);z-index:50;opacity:0;transition:opacity .2s;pointer-events:none}
+body.nav-open .backdrop{opacity:1;pointer-events:auto}
+@media(max-width:860px){
+  .shell{grid-template-columns:1fr}
+  .mtop{display:flex}
+  .sidebar{position:fixed;top:0;left:0;height:100vh;width:286px;z-index:60;transform:translateX(-100%);transition:transform .22s ease;box-shadow:0 0 50px rgba(0,0,0,.28)}
+  body.nav-open .sidebar{transform:translateX(0)}
+  .container{padding:20px 16px 84px}
+}
+.brand{display:flex;align-items:center;gap:11px;cursor:pointer;padding:6px 8px;border-radius:14px;margin-bottom:8px}
+.brand .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--primary),#8f7bf5);display:grid;place-items:center;color:#fff;box-shadow:0 6px 16px rgba(108,92,231,.35)}
+.brand b{font-size:15px;letter-spacing:.02em;line-height:1.2}
+.brand small{display:block;color:var(--sub);font-size:11px;font-weight:600;margin-top:1px}
+.side-search{position:relative;width:100%;margin-bottom:6px}
+.side-search .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--sub)}
+.side-search input{width:100%;padding:10px 12px 10px 36px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--ink);font-size:13.5px;font-family:inherit}
+.side-search input:focus{outline:none;border-color:var(--primary);background:var(--panel)}
+.nav{display:flex;flex-direction:column;gap:3px;margin-top:4px}
+.navlink{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:12px;color:var(--sub);font-weight:700;font-size:14px;cursor:pointer;transition:background .12s,color .12s}
+.navlink .ic{color:var(--sub)}
+.navlink:hover{background:var(--panel2);color:var(--ink)}
+.navlink:hover .ic{color:var(--ink)}
+.navlink.active{background:var(--primary-soft);color:var(--primary-d)}
+.navlink.active .ic{color:var(--primary-d)}
+.themebtn{margin-top:auto;display:flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid var(--line);background:var(--panel2);color:var(--sub);border-radius:12px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer}
+.themebtn:hover{color:var(--ink);border-color:var(--primary)}
+.side-foot{color:var(--sub);font-size:11.5px;padding:12px 8px 0;border-top:1px solid var(--line);line-height:1.6}
+
+/* ===== 見出し ===== */
+.crumb{color:var(--sub);font-size:12.5px;margin-bottom:12px;display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.crumb .ic{opacity:.6}
+h1{font-size:26px;line-height:1.32;margin:2px 0 10px;letter-spacing:.01em;font-weight:800}
+.lead{color:var(--sub);font-size:14px;margin-bottom:6px}
+h2{font-size:17px;margin:34px 0 14px;display:flex;align-items:center;gap:10px;font-weight:800}
+h2 .bar{width:5px;height:19px;background:var(--primary);border-radius:3px}
+h3{font-size:14.5px;margin:16px 0 6px;font-weight:800}
+
+/* ===== カード ===== */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:16px;margin-top:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);cursor:pointer;transition:transform .13s ease,box-shadow .13s;display:block}
+.card:hover{transform:translateY(-3px);box-shadow:0 6px 14px rgba(28,30,55,.08),0 18px 40px rgba(28,30,55,.1)}
+.card .tile{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;margin-bottom:14px}
+.card .t{font-weight:800;font-size:16px;color:var(--ink)}
+.card .d{color:var(--sub);font-size:12.5px;margin-top:4px;line-height:1.6}
+.card .n{color:var(--primary-d);font-size:12px;font-weight:800;margin-top:10px;display:flex;align-items:center;gap:4px}
+/* パステルのタイル配色 */
+.t-violet{background:var(--primary-soft);color:var(--primary-d)}
+.t-mint{background:var(--mint-soft);color:var(--mint)}
+.t-amber{background:var(--amber-soft);color:var(--amber)}
+.t-sky{background:var(--sky-soft);color:var(--sky)}
+.t-pink{background:var(--pink-soft);color:var(--pink)}
+
+/* ===== チップ ===== */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--panel2);color:var(--chip-ink);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700}
+.chip .ic{color:var(--chip-ink)}
+.chip.m{background:var(--primary-soft);color:var(--primary-d);border-color:transparent}
+.chip.m .ic{color:var(--primary-d)}
+
+/* ===== テーブル ===== */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--panel)}
+.tbl th,.tbl td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.tbl th{background:var(--panel2);font-size:12px;color:var(--sub);font-weight:800;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:none}
+.tbl b{color:var(--ink)}
+.tbl a{font-weight:700}
+
+/* ===== 動画 ===== */
+.player-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin:16px 0 6px}
+.player-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000}
+.player-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.thumb{position:relative;display:block;width:100%;aspect-ratio:16/9;background:#0b0b12 center/cover no-repeat}
+.thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.5))}
+.thumb .playbtn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:76px;height:76px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;z-index:2;box-shadow:0 8px 24px rgba(0,0,0,.45);transition:transform .12s}
+.thumb:hover .playbtn{transform:translate(-50%,-50%) scale(1.06)}
+.thumb .thumbcap{position:absolute;left:16px;bottom:13px;color:#fff;font-size:12.5px;font-weight:800;z-index:2;text-shadow:0 1px 4px rgba(0,0,0,.8);display:flex;align-items:center;gap:6px}
+.player-bar{display:flex;align-items:center;gap:10px;padding:11px 16px;font-size:12.5px;color:var(--sub);flex-wrap:wrap}
+.player-bar a{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-weight:700}
+
+/* ===== ステップ ===== */
+.step{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px 18px;margin:13px 0}
+.step-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.step-num{width:30px;height:30px;flex:none;border-radius:10px;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px}
+.step-name{font-weight:800;font-size:16px;flex:1;min-width:140px}
+.segs{display:flex;flex-wrap:wrap;gap:7px}
+.seg{display:inline-flex;align-items:center;gap:6px;background:var(--primary-soft);color:var(--primary-d);border:none;border-radius:10px;padding:6px 12px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;transition:background .12s}
+.seg:hover{background:var(--primary);color:#fff}
+.seg:hover .ic{color:#fff}
+.seg .ic{color:var(--primary-d)}
+.purpose{color:var(--sub);font-size:13px;margin:11px 0 4px}
+.how{margin:9px 0;padding:0;list-style:none}
+.how li{position:relative;padding:4px 0 4px 24px;font-size:14px}
+.how li .ic{position:absolute;left:2px;top:5px;color:var(--primary)}
+.tip,.ng{padding:9px 13px;border-radius:11px;margin:7px 0;font-size:13px;display:flex;gap:9px;align-items:flex-start;line-height:1.6}
+.tip .ic,.ng .ic{margin-top:2px}
+.tip{background:var(--mint-soft);color:#0a8f85}
+.tip .ic{color:var(--mint)}
+.ng{background:var(--danger-soft);color:#c9414c}
+.ng .ic{color:var(--danger)}
+@media(prefers-color-scheme:dark){.tip{color:#54d8cb}.ng{color:#f48b93}}
+
+/* ===== フロー ===== */
+.flowline{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:14px 0}
+.flowchip{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 13px;font-size:13.5px;font-weight:700;box-shadow:var(--shadow)}
+.flowchip .num{width:22px;height:22px;border-radius:7px;background:var(--primary-soft);color:var(--primary-d);display:grid;place-items:center;font-size:12px;font-weight:800}
+.flowline .ar{color:var(--sub);display:grid;place-items:center}
+
+/* ===== フロー（縦・全体マップ） ===== */
+.steps-v{display:flex;flex-direction:column;gap:10px}
+.rowitem{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.rowitem .rt{width:44px;height:44px;flex:none;border-radius:13px;background:var(--primary-soft);color:var(--primary-d);display:grid;place-items:center}
+.rowitem .rn{font-size:11px;font-weight:800;color:var(--sub)}
+.rowitem .rname{font-weight:800;font-size:15px;margin-top:1px}
+.rowitem .rd{color:var(--sub);font-size:12.5px;margin-top:2px}
+
+/* ===== 進捗 ===== */
+.checklist{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.check{display:flex;gap:13px;align-items:flex-start;padding:13px 17px;border-bottom:1px solid var(--line);cursor:pointer}
+.check:last-child{border-bottom:none}
+.check input{margin-top:3px;width:20px;height:20px;flex:none;accent-color:var(--primary);cursor:pointer}
+.check .cn{font-weight:700}
+.check .cd{color:var(--sub);font-size:12.5px}
+.check.done .cn{text-decoration:line-through;color:var(--sub)}
+
+.pill{font-size:11px;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:3px 11px;margin-right:8px;font-weight:800;background:var(--panel2)}
+.emptynote{color:var(--sub);font-size:13px;background:var(--panel);border:1px dashed var(--line);border-radius:14px;padding:16px 18px}
+.dep{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 15px;margin:8px 0;font-size:14px;box-shadow:var(--shadow)}
+
+/* ===== 進捗ダッシュボード ===== */
+.dash{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px 18px;margin-top:14px}
+.dashrow{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.dashrow:last-child{border-bottom:none}
+.dashrow .rname{font-weight:700;font-size:14px;flex:none;width:130px}
+.pbar{flex:1;height:9px;border-radius:6px;background:var(--panel2);overflow:hidden}
+.pbar>span{display:block;height:100%;background:var(--primary);border-radius:6px}
+.dashrow .pct{font-size:12px;font-weight:800;color:var(--primary-d);width:38px;text-align:right}
+.dashrow .next{font-size:11.5px;color:var(--sub);width:150px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:640px){.dashrow .next{display:none}}
+
+/* ===== 買い物リスト強化 ===== */
+.buyhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 12px}
+.total{background:var(--primary-soft);color:var(--primary-d);border-radius:12px;padding:8px 14px;font-weight:800;font-size:14px}
+.buyrow{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line)}
+.buyrow:last-child{border-bottom:none}
+.buyrow input[type=checkbox]{width:19px;height:19px;flex:none;accent-color:var(--primary);cursor:pointer}
+.buyrow.bought .bn{text-decoration:line-through;color:var(--sub)}
+.buyrow .bn{font-weight:700;flex:1;min-width:120px}
+.buyrow .byen{font-weight:800;color:var(--ink);font-size:13px}
+.buyrow .bproc{font-size:11.5px;color:var(--sub)}
+.buyrow .del{margin-left:6px;color:var(--danger);cursor:pointer;font-weight:800;border:none;background:none;font-size:16px}
+.addbox{display:flex;gap:8px;margin-top:12px}
+.addbox input{flex:1;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--ink);font-family:inherit;font-size:13.5px}
+.addbox button,.btn{padding:9px 16px;border:none;border-radius:10px;background:var(--primary);color:#fff;font-weight:800;font-family:inherit;font-size:13.5px;cursor:pointer}
+.addbox button:hover,.btn:hover{background:var(--primary-d)}
+
+/* ===== 動画ページ：目次＋タイムライン ===== */
+.vlayout{display:grid;grid-template-columns:1fr 210px;gap:24px;align-items:start}
+@media(max-width:900px){.vlayout{grid-template-columns:1fr}.toc{display:none}}
+.toc{position:sticky;top:20px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:12px 8px;font-size:13px}
+.toc .th{font-weight:800;font-size:11.5px;color:var(--sub);padding:4px 10px 8px}
+.toc a{display:block;padding:6px 10px;border-radius:8px;color:var(--sub);font-weight:600;cursor:pointer}
+.toc a:hover{background:var(--panel2);color:var(--ink);text-decoration:none}
+.timeline{position:relative;height:34px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;margin:8px 0 4px;overflow:hidden;cursor:pointer}
+.tlseg{position:absolute;top:4px;bottom:4px;background:var(--primary);opacity:.75;border-radius:4px}
+.tlseg:hover{opacity:1}
+.tlnums{display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-bottom:14px}
+
+/* ステップ画像 */
+.step{display:block}
+.step-body{display:block;margin-top:10px}
+.step-thumb{width:100%;max-width:560px;border-radius:12px;overflow:hidden;border:1px solid var(--line);cursor:zoom-in;background:#000;aspect-ratio:16/9;margin-bottom:14px}
+.step-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.step-main{min-width:0}
+
+/* 用語ツールチップ */
+.term{border-bottom:1.5px dotted var(--primary);cursor:help}
+
+/* メモ */
+.note textarea{width:100%;min-height:90px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--ink);font-family:inherit;font-size:14px;line-height:1.7;resize:vertical}
+.note textarea:focus{outline:none;border-color:var(--primary);background:var(--panel)}
+.note .saved{font-size:11.5px;color:var(--mint);font-weight:700;margin-top:4px;height:14px}
+
+/* 費用のめやす */
+.cost-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:560px){.cost-grid{grid-template-columns:1fr}}
+.cost-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px}
+.cost-card.diy{border-top:4px solid var(--primary)}
+.cost-card.pro{border-top:4px solid var(--amber)}
+.cost-card .lab{font-size:12px;color:var(--sub);font-weight:800}
+.cost-card .big{font-size:23px;font-weight:800;margin:5px 0 2px}
+.cost-card .sub{font-size:12.5px;color:var(--sub);line-height:1.6}
+.sim{background:var(--primary-soft);border-radius:14px;padding:14px 16px;margin:14px 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sim label{font-weight:800;font-size:14px;color:var(--primary-d)}
+.sim input{width:76px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:16px;text-align:right;background:var(--panel);color:var(--ink)}
+.sim .simout{font-weight:800;color:var(--ink);font-size:13.5px}
+.muted{color:var(--sub);font-size:12.5px}
+
+/* 工程アコーディオン */
+.acc{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin:11px 0;overflow:hidden}
+.acc[open]{border-color:var(--primary)}
+.acc-sum{list-style:none;cursor:pointer;display:flex;align-items:center;gap:13px;padding:15px 16px}
+.acc-sum::-webkit-details-marker{display:none}
+.acc-ic{width:44px;height:44px;flex:none;border-radius:13px;background:var(--primary-soft);color:var(--primary-d);display:grid;place-items:center}
+.acc-t{flex:1;min-width:0}
+.acc-step{display:block;font-size:11px;font-weight:800;color:var(--sub);letter-spacing:.02em}
+.acc-name{font-weight:800;font-size:16.5px;display:block}
+.acc-do{font-size:12.5px;color:var(--sub);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.acc[open] .acc-do{display:none}
+.acc-caret{color:var(--sub);transition:transform .2s;flex:none}
+.acc[open] .acc-caret{transform:rotate(90deg)}
+.acc-body{padding:2px 16px 18px;border-top:1px solid var(--line)}
+.acc-body>.rd{margin:12px 0}
+.acc-body h3{font-size:12.5px;color:var(--primary-d);margin:18px 0 8px;font-weight:800;display:flex;align-items:center;gap:6px}
+.toollist{list-style:none;padding:0;margin:6px 0}
+.toollist li{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.toollist li:last-child{border-bottom:none}
+.toollist li .ic{color:var(--primary);vertical-align:-3px;margin-right:5px}
+.buy-sum{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.shoplinks{display:inline-flex;gap:5px;flex-wrap:wrap}
+.shoplink{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--primary-d);background:var(--primary-soft);border-radius:7px;padding:2px 8px;white-space:nowrap}
+.shoplink:hover{background:var(--primary);color:#fff;text-decoration:none}.shoplink:hover .ic{color:#fff}.shoplink .ic{color:var(--primary-d)}
+.subtag{display:inline-block;background:var(--mint-soft);color:#0a8f85;font-size:10.5px;font-weight:800;border-radius:6px;padding:1px 7px;margin-left:7px;vertical-align:middle}
+@media(prefers-color-scheme:dark){.subtag{color:#54d8cb}}
+.toollist li .subtag{margin-left:6px}
+
+/* 工程バッジ（A） */
+.vbadges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.vb{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;color:var(--chip-ink);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:3px 9px}
+.vb .ic{color:var(--sub)}
+.vb-star{color:var(--amber)}.vb-star .ic{color:var(--amber)}
+.vb-cost{background:var(--primary-soft);color:var(--primary-d);border-color:transparent}.vb-cost .ic{color:var(--primary-d)}
+.vb-risk{background:var(--warn-soft);color:#b4530a;border-color:transparent}.vb-risk .ic{color:var(--warn)}
+.vb-lic{background:var(--danger);color:#fff;border-color:transparent;font-weight:800}.vb-lic .ic{color:#fff}
+.step.lic{border:1.5px solid var(--danger)}
+.step-lic{display:inline-flex;align-items:center;gap:4px;background:var(--danger);color:#fff;font-size:10.5px;font-weight:800;border-radius:6px;padding:2px 8px;margin-left:8px}
+.step-lic .ic{color:#fff}
+.acc.acc-lic{border-color:var(--danger)}
+.precheck{background:var(--warn-soft);border:1px solid var(--amber);border-radius:14px;padding:6px 14px 12px;margin:14px 0}
+.precheck>summary{list-style:none;cursor:pointer;font-weight:800;font-size:14px;color:#b4530a;padding:8px 0;display:flex;align-items:center;gap:8px}
+.precheck>summary::-webkit-details-marker{display:none}
+.precheck .ic{color:var(--warn)}
+@media(prefers-color-scheme:dark){.precheck>summary{color:var(--warn)}}
+.precheck .checklist{background:var(--panel)}
+
+/* 現場モード */
+.field{position:fixed;inset:0;z-index:120;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.field-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+.field-top .fx{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--sub);font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}
+.field-count{font-weight:800;font-size:15px;color:var(--primary-d)}
+.field-prog{height:6px;background:var(--panel2)}
+.field-prog>span{display:block;height:100%;background:var(--primary);transition:width .2s}
+.field-body{flex:1;overflow-y:auto;padding:18px 18px 24px;max-width:760px;margin:0 auto;width:100%}
+.field-lic{background:var(--danger);color:#fff;font-weight:800;font-size:13.5px;border-radius:10px;padding:9px 13px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.field-lic .ic{color:#fff}
+.field-img{border-radius:14px;overflow:hidden;position:relative;cursor:zoom-in;margin-bottom:14px;border:1px solid var(--line)}
+.field-img img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
+.field-name{font-size:24px;font-weight:800;line-height:1.35;margin:4px 0 8px}
+.field-purpose{color:var(--sub);font-size:15px;margin-bottom:14px}
+.field-play{width:100%;background:var(--primary);color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
+.field-play:hover{background:var(--primary-d)}
+.field-h{font-size:13px;color:var(--sub);margin:18px 0 8px;font-weight:800}
+.field-how{list-style:none;padding:0;margin:0}
+.field-how li{position:relative;padding:8px 0 8px 26px;font-size:16.5px;line-height:1.6;border-bottom:1px solid var(--line)}
+.field-how li::before{content:"";position:absolute;left:4px;top:15px;width:9px;height:9px;border-radius:50%;background:var(--primary)}
+.field .tip,.field .ng{font-size:15px;padding:11px 14px}
+.field-nav{display:flex;gap:10px;padding:12px 16px;background:var(--panel);border-top:1px solid var(--line)}
+.field-nav button{flex:1;border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:12px;padding:14px 8px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px}
+.field-nav .fnav:disabled{opacity:.4}
+.field-nav .fcheck{flex:1.6;background:var(--mint);color:#fff;border-color:transparent}
+.field-nav .fcheck.on{background:var(--accent-d);color:#fff}
+.field-nav .fcheck:hover{filter:brightness(1.05)}
+.dobtn{display:inline-flex;align-items:center;gap:7px;background:var(--mint);color:#fff;border:none;border-radius:11px;padding:10px 18px;font-size:14px;font-weight:800;font-family:inherit;cursor:pointer;margin:6px 0 2px}
+.dobtn:hover{filter:brightness(1.05);text-decoration:none}
+
+/* 見積りページ */
+.estroom{display:flex;gap:9px;align-items:center;width:170px;font-size:14px}
+.estroom input{width:18px;height:18px;accent-color:var(--primary)}
+.estj{width:90px;color:var(--sub);font-size:13px}
+.estj input{width:52px;padding:5px 7px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--ink);font-family:inherit;text-align:right}
+.save-big{background:var(--mint-soft);color:#0a8f85;border-radius:14px;padding:14px 16px;font-size:16px;font-weight:800;margin:14px 0;display:flex;align-items:center;gap:9px}
+.save-big .ic{color:var(--mint)}
+@media(prefers-color-scheme:dark){.save-big{color:#54d8cb}}
+.split-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.splitrow{display:flex;align-items:center;gap:10px;padding:11px 15px;border-bottom:1px solid var(--line);font-size:14px}
+.splitrow:last-child{border-bottom:none}
+.splitrow .bn{flex:1;font-weight:700;min-width:0}
+.splitrow .byen{font-weight:800;white-space:nowrap}
+.splitrow.lic{background:var(--danger-soft)}
+.splitrow a{white-space:nowrap;font-weight:700}
+
+/* 工法えらび（対話） */
+.diaggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:14px}
+.diagcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px}
+.diagq{font-weight:800;font-size:16px;margin-bottom:12px}
+.diagq span{display:block;font-weight:600;font-size:13px;color:var(--sub);margin-top:3px}
+.diagopts{display:flex;flex-direction:column;gap:7px}
+.diagopt{text-align:left;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer}
+.diagopt:hover{border-color:var(--primary);background:var(--primary-soft)}
+.diagopt.on{background:var(--primary);color:#fff;border-color:transparent}
+.diagans{display:flex;gap:9px;align-items:flex-start;background:var(--accent-soft);color:var(--accent-d);border-radius:11px;padding:12px 14px;margin-top:12px;font-size:14px;line-height:1.6}
+.diagans .ic{color:var(--accent-d);margin-top:2px;flex:none}
+@media(prefers-color-scheme:dark){.diagans{color:var(--accent-d)}}
+@media(prefers-color-scheme:dark){.vb-risk{color:var(--warn)}}
+/* 画像の時刻ラベル（B） */
+.step-thumb{position:relative}
+.thumb-time{position:absolute;right:6px;bottom:6px;background:rgba(18,20,30,.82);color:#fff;font-size:11px;font-weight:800;padding:2px 7px;border-radius:6px;display:flex;align-items:center;gap:3px}
+.thumb-time .ic{color:#fff}
+.step-thumb .zoomhint{position:absolute;left:6px;top:6px;background:rgba(18,20,30,.72);color:#fff;border-radius:6px;padding:2px;display:flex;opacity:0;transition:opacity .15s}
+.step-thumb:hover .zoomhint{opacity:1}
+/* 作業の流れ 3コマ（見てわかる強化） */
+.flowstrip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:640px;margin-bottom:14px}
+.fs-item{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#000;cursor:zoom-in;aspect-ratio:4/3}
+.fs-item img{width:100%;height:100%;object-fit:cover;display:block}
+.fs-lab{position:absolute;left:5px;top:5px;background:rgba(18,20,30,.82);color:#fff;font-size:10.5px;font-weight:800;padding:2px 6px;border-radius:6px;letter-spacing:.02em}
+.fs-item:not(:last-child)::after{content:"";position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-left:6px solid var(--accent);border-top:5px solid transparent;border-bottom:5px solid transparent;z-index:2}
+@media(max-width:520px){.fs-lab{font-size:9.5px;padding:1px 4px}}
+/* まとめ（物件別ロードマップ・ゴールの描き方） */
+.goalbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0 6px}
+.gb-h{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;color:var(--accent);margin-bottom:12px}
+.gb-h .ic{color:var(--accent)}
+.gb-steps{display:grid;gap:10px}
+.gb-step{display:flex;gap:11px;align-items:flex-start}
+.gb-no{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.gb-step b{font-size:14px}
+.gb-d{color:var(--sub);font-size:13px;margin-top:2px;line-height:1.65}
+/* 完成写真ギャラリー */
+.cg-h{display:flex;align-items:center;gap:7px;font-weight:800;font-size:13.5px;margin:14px 0 9px}
+.cg-h .ic{color:var(--ok,#12b3a6)}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.cg-item{position:relative;margin:0;border-radius:11px;overflow:hidden;border:1px solid var(--line);background:#000;cursor:pointer;aspect-ratio:16/10}
+.cg-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
+.cg-item:hover img{transform:scale(1.04)}
+.cg-item figcaption{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(15,17,26,.92));color:#fff;font-size:12px;font-weight:700;padding:18px 9px 7px;display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
+.cg-room{min-width:0}
+.cg-yt{flex:none;display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,.16);color:#fff;font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:6px}
+.cg-yt:hover{background:var(--accent)}
+.cg-yt .ic{color:#fff}
+.cg-zoom{position:absolute;right:6px;top:6px;background:rgba(18,20,30,.72);color:#fff;border-radius:6px;padding:3px;display:flex;opacity:0;transition:opacity .15s;cursor:zoom-in}
+.cg-item:hover .cg-zoom{opacity:1}
+/* しくじり図鑑 */
+.faillist{display:grid;gap:9px}
+.fail{display:flex;gap:10px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--warn,#e0873f);border-radius:10px;padding:11px 13px}
+.fail-ic{flex:none;color:var(--warn,#e0873f);margin-top:1px}
+.fail-b{min-width:0;flex:1}
+.fail-t{font-size:14px;line-height:1.6;font-weight:600}
+.fail-src{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--sub)}
+.tuition{display:inline-flex;align-items:center;gap:3px;background:var(--danger);color:#fff;font-weight:800;font-size:11.5px;padding:2px 8px;border-radius:6px}
+.tuition .ic{color:#fff}
+.accgroup{display:grid;gap:9px}
+/* スターター道具 */
+.startergrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:9px}
+.starter{display:flex;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.st-rank{flex:none;width:24px;height:24px;border-radius:7px;background:var(--accent);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.st-b{min-width:0;flex:1}
+.st-n{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.st-n b{font-size:14px}
+.st-freq{font-size:11px;color:var(--sub);font-weight:700}
+.st-sub{font-size:12px;color:var(--sub);margin:4px 0 2px;display:flex;align-items:center;gap:4px}
+.st-sub .ic{color:var(--accent)}
+.st-buy{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:5px}
+.qtytbl .qv{white-space:nowrap;color:var(--accent)}
+.qtytbl .qn{font-size:11.5px}
+/* ビフォーアフター・ギャラリー */
+.bagrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:11px}
+.ba{position:relative;margin:0;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#000;cursor:pointer;aspect-ratio:16/10}
+.ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.ba-before{opacity:0;transition:opacity .28s}
+.ba:hover .ba-before,.ba:active .ba-before{opacity:1}
+.ba-tag{position:absolute;top:7px;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:6px;color:#fff;z-index:2}
+.ba-taga{right:7px;background:var(--accent)}
+.ba-tagb{left:7px;background:#c0392b;opacity:0;transition:opacity .28s}
+.ba:hover .ba-tagb,.ba:active .ba-tagb{opacity:1}
+.ba:hover .ba-taga,.ba:active .ba-taga{opacity:0}
+.ba figcaption{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(15,17,26,.9));color:#fff;padding:16px 9px 7px;z-index:2}
+.ba-room{display:block;font-size:12.5px;font-weight:800}
+.ba-ser{display:block;font-size:10.5px;opacity:.8}
+/* 用語集 */
+.glsearch{width:100%;max-width:420px;padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--panel);color:var(--tx);font-size:14px;margin:4px 0 14px}
+.gllist{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:9px;margin:0}
+.gl-item{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+.gl-item dt{font-weight:800;font-size:14.5px;margin-bottom:3px;color:var(--accent)}
+.gl-item dd{margin:0;font-size:13px;line-height:1.6;color:var(--tx)}
+.roadmap{margin-top:12px}
+.rmnode{display:flex;gap:14px;position:relative;padding-bottom:20px}
+.rmnode:not(:last-child)::before{content:"";position:absolute;left:17px;top:38px;bottom:-2px;width:2px;background:var(--line)}
+.rm-mark{flex:none;width:36px;height:36px;border-radius:10px;background:color-mix(in srgb,var(--pc) 14%,transparent);color:var(--pc);display:flex;align-items:center;justify-content:center;z-index:1}
+.rm-mark .ic{color:var(--pc)}
+.rm-body{flex:1;min-width:0}
+.rm-head{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-top:4px}
+.rm-step{font-size:11.5px;font-weight:800;color:var(--pc);letter-spacing:.03em}
+.rm-name{font-size:17px;font-weight:800}
+.rm-sub{font-size:12.5px;color:var(--sub)}
+.rm-comp{font-size:12.5px;color:var(--sub);display:flex;align-items:center;gap:6px;margin:6px 0 8px;flex-wrap:wrap}
+.rm-comp .ic{color:var(--pc)}
+.rm-accs{display:grid;gap:8px}
+/* 大まかな流れの帯 */
+.flowwrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 4px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.flowwrap .flowchip{display:inline-flex;align-items:center;gap:5px;background:var(--panel);border:1.5px solid var(--line);border-radius:999px;padding:4px 11px 4px 4px;font-size:12.5px;font-weight:700}
+.flowwrap .flowchip .num{width:19px;height:19px;border-radius:50%;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.flowwrap .flowchip .ic{opacity:.85}
+.flowwrap .ar{color:var(--sub);display:flex}
+/* やった順ノード */
+.rmep{overflow:visible}
+.rmep .acc-sum{align-items:flex-start}
+.ep-no{flex:none;min-width:40px;height:26px;padding:0 8px;border-radius:8px;background:var(--accent);color:#fff;font-weight:800;font-size:13.5px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.ep-chips{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 2px}
+.ep-chips .chip{background:color-mix(in srgb,var(--cc,#6c5ce7) 12%,transparent);border:1px solid color-mix(in srgb,var(--cc,#6c5ce7) 35%,transparent);color:var(--tx);font-size:11.5px;padding:2px 8px;display:inline-flex;align-items:center;gap:4px}
+.ep-chips .chip .ic{color:var(--cc,#6c5ce7)}
+/* Before/After（C） */
+.ba{display:flex;align-items:center;gap:10px;margin:12px 0}
+.ba-item{position:relative;flex:1;min-width:0;border-radius:12px;overflow:hidden;border:1px solid var(--line);cursor:zoom-in}
+.ba-item img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
+.ba-tag{position:absolute;top:8px;left:8px;background:rgba(18,20,30,.78);color:#fff;font-size:11px;font-weight:800;padding:2px 10px;border-radius:6px;z-index:1}
+.ba-tag.after{background:var(--mint)}
+.ba-arrow{color:var(--sub);flex:none}
+@media(max-width:480px){.ba{flex-direction:column}.ba-arrow{transform:rotate(90deg)}}
+/* ライトボックス（B） */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+.lightbox.on{display:flex}
+.lightbox img{max-width:100%;max-height:100%;border-radius:10px;box-shadow:0 10px 60px rgba(0,0,0,.6)}
+.lightbox .lbclose{position:absolute;top:16px;right:20px;color:#fff;background:rgba(255,255,255,.15);border-radius:10px;padding:8px;display:flex}
+/* フィルタ（H） */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.filters select{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--ink);font-family:inherit;font-size:13.5px;font-weight:700}
+
+/* 印刷 */
+@media print{
+  .sidebar,.mtop,.backdrop,.toc,.player-card,.timeline,.tlnums,.step-thumb,.themebtn,.note textarea{display:none !important}
+  .shell{display:block}.vlayout{display:block}
+  body{background:#fff;color:#000}
+  .step,.tablewrap,.dep,.checklist{break-inside:avoid;box-shadow:none}
+  a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand" onclick="go('')">
+      <div class="logo" id="brandlogo"></div>
+      <div><b>リフォーム手順書</b><small>ひとりでできるマンDIY</small></div>
+    </div>
+    <div class="side-search"><span id="searchic"></span><input id="search" placeholder="作業・道具・部屋・症状を検索" oninput="onSearch(this.value)"></div>
+    <nav class="nav" id="nav"></nav>
+    <button class="themebtn" id="themebtn" onclick="toggleTheme()"></button>
+    <div class="side-foot">全130本を手順書化するプロジェクト。各動画の作業を分単位で解説します。</div>
+  </aside>
+  <main class="main">
+    <div class="mtop">
+      <div class="mbrand" onclick="go('')"><span class="logo" id="mlogo"></span><b>リフォーム手順書</b></div>
+      <button class="hamb" id="hamb" onclick="toggleNav()" aria-label="メニュー"></button>
+    </div>
+    <div class="container" id="app"></div>
+  </main>
+</div>
+<div class="backdrop" onclick="closeNav()"></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox()"><span class="lbclose" id="lbclose"></span><img id="lbimg" alt=""></div>
+
+<script src="data.js"></script>
+<script>
+const D = window.REFORM_DATA;
+const app = document.getElementById('app');
+const render=(h)=>{app.innerHTML=h;window.scrollTo(0,0)};
+const esc=(s)=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=(s)=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+const ytUrl=(id,t)=>`https://www.youtube.com/watch?v=${id}${t?`&t=${Math.floor(t)}s`:''}`;
+const go=(route)=>{location.hash='#/'+route};
+const isFile = location.protocol==='file:' || location.protocol==='data:';
+
+/* ===== SVG アイコン（絵文字不使用） ===== */
+const ICONS={
+  home:'<path d="M4 10.8 12 4l8 6.8V20a1 1 0 0 1-1 1h-4.2v-6.2H9.2V21H5a1 1 0 0 1-1-1z"/>',
+  door:'<path d="M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17"/><path d="M4 21h16"/><circle cx="14.8" cy="12" r="1"/>',
+  tool:'<path d="M14.6 6.4a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.4-3.4a6 6 0 0 1-7.9 7.7l-6.6 6.6a2.1 2.1 0 0 1-3-3l6.6-6.6a6 6 0 0 1 7.7-7.9z"/>',
+  map:'<path d="M9 4 3 6.2v13.6L9 18l6 2 6-2.2V4.2L15 6 9 4z"/><path d="M9 4v14"/><path d="M15 6v14"/>',
+  help:'<circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="3.3"/><path d="m6.2 6.2 3.4 3.4"/><path d="m14.4 14.4 3.4 3.4"/><path d="m17.8 6.2-3.4 3.4"/><path d="m9.6 14.4-3.4 3.4"/>',
+  cart:'<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.2l2.3 12a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6"/>',
+  play:'<path d="M8 5.2v13.6L19 12z"/>',
+  bulb:'<path d="M9.2 18h5.6"/><path d="M10 21.5h4"/><path d="M12 2.5a6 6 0 0 0-3.8 10.6c.7.6 1.1 1.3 1.2 2.4h5.2c.1-1.1.5-1.8 1.2-2.4A6 6 0 0 0 12 2.5z"/>',
+  alert:'<path d="M12 3.5 2.6 20a1 1 0 0 0 .9 1.5h17a1 1 0 0 0 .9-1.5z"/><path d="M12 9.5v5"/><circle cx="12" cy="17.6" r=".7" fill="currentColor" stroke="none"/>',
+  check:'<path d="M20 6.5 9.4 17 4 11.6"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4-4"/>',
+  ext:'<path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M19 14.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h4.5"/>',
+  chevron:'<path d="m9 6 6 6-6 6"/>',
+  floor:'<rect x="3.5" y="4.5" width="17" height="15" rx="1.2"/><path d="M3.5 10h17M3.5 15h17M9 4.5v15M15 4.5v15"/>',
+  wall:'<rect x="3.5" y="4.5" width="17" height="15" rx="1.2"/><path d="M3.5 9.5h17M3.5 14.5h17M8 4.5v5M15 4.5v5M11.5 9.5v5M8 14.5v5M15 14.5v5"/>',
+  brush:'<path d="M3 21c2 0 3.2-1.1 3.2-3 0-1.4 1-2.4 2.4-2.4 1.6 0 2.6-1.2 2.6-3l7-7L21 8.8l-7 7c-1.8 0-3 1-3 2.6C11 20 9.4 21 7.2 21z"/>',
+  zap:'<path d="M13 2.5 4 14h6l-1 7.5L20 10h-6z"/>',
+  droplet:'<path d="M12 3s6.5 6.4 6.5 10.4A6.5 6.5 0 0 1 5.5 13.4C5.5 9.4 12 3 12 3z"/>',
+  window:'<rect x="4" y="3.5" width="16" height="17" rx="1.4"/><path d="M12 3.5v17M4 12h16"/>',
+  layers:'<path d="M12 3 3 8l9 5 9-5z"/><path d="m3 13 9 5 9-5"/>',
+  hammer:'<path d="M14 6.5 17.5 3 21 6.5 17.5 10z"/><path d="m16 8.5-8.5 8.5"/><path d="M8.5 15 5 18.5 3 16.5 6.5 13z"/>',
+  route:'<circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="6" r="2.4"/><path d="M8.4 18H14a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M2.5 12H5M19 12h2.5M4.5 19.5l1.8-1.8M17.7 6.3l1.8-1.8"/>',
+  moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  menu:'<path d="M3.5 6.5h17M3.5 12h17M3.5 17.5h17"/>',
+  close:'<path d="M6 6l12 12M18 6L6 18"/>',
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.2v5l3.4 2"/>',
+  star:'<path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 17l-5.3 2.8 1-5.8-4.2-4.1 5.9-.9z" fill="currentColor" stroke="none"/>',
+  zoom:'<circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4-4M11 8.5v5M8.5 11h5"/>',
+  book:'<path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19a1 1 0 0 1 1 1v14.5a1 1 0 0 1-1 1H6a2 2 0 0 0-2 2z"/><path d="M8 3v13.5"/>',
+  target:'<circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="4.4"/><circle cx="12" cy="12" r=".6" fill="currentColor" stroke="none"/>',
+  flag:'<path d="M5 21V4"/><path d="M5 4.5h11l-2 3.5 2 3.5H5"/>'
+};
+function ic(name,size,fill){size=size||20;const p=ICONS[name]||ICONS.check;
+  return `<svg class="ic" viewBox="0 0 24 24" width="${size}" height="${size}" fill="${fill?'currentColor':'none'}" stroke="${fill?'none':'currentColor'}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`}
+const procIcon=(p)=>({"床":"floor","壁紙クロス":"wall","塗装":"brush","電気":"zap","水回り":"droplet","建具・窓":"window","足場・下地":"layers","洗浄":"droplet","解体・撤去":"hammer","設備・仕上げ":"tool"}[p]||"tool");
+
+/* ---- 集計 ---- */
+const videosByRoom=(r)=>D.videos.filter(v=>v.rooms.includes(r));
+const videosByProcess=(p)=>D.videos.filter(v=>v.processes.includes(p));
+function roomsPresent(){const s=new Set();D.videos.forEach(v=>v.rooms.forEach(r=>s.add(r)));return D.roomOrder.filter(r=>s.has(r)).concat([...s].filter(r=>!D.roomOrder.includes(r)))}
+function procPresent(){const s=new Set();D.videos.forEach(v=>v.processes.forEach(p=>s.add(p)));return D.processOrder.filter(p=>s.has(p)).concat([...s].filter(p=>!D.processOrder.includes(p)))}
+
+/* ---- 進捗 ---- */
+const LS='reform_progress_v1';
+const prog=()=>{try{return JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){return{}}};
+function toggleCheck(k,el){const p=prog();if(el.checked)p[k]=1;else delete p[k];localStorage.setItem(LS,JSON.stringify(p));el.closest('.check').classList.toggle('done',el.checked)}
+
+/* ---- 用語ツールチップ ---- */
+function gloss(text){
+  const G=D.glossary||{};const terms=Object.keys(G).sort((a,b)=>b.length-a.length);
+  if(!terms.length)return text;
+  const re=new RegExp('('+terms.map(t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','g');
+  const seen=new Set();
+  return text.replace(re,(m)=>{if(seen.has(m))return m;seen.add(m);return `<span class="term" title="${esc(G[m])}">${m}</span>`});
+}
+/* ---- 買い物リスト（チェック・カスタム） ---- */
+const BUY='reform_buy_v1', BUYC='reform_buycustom_v1';
+const buyState=()=>{try{return JSON.parse(localStorage.getItem(BUY)||'{}')}catch(e){return{}}};
+const buyCustom=()=>{try{return JSON.parse(localStorage.getItem(BUYC)||'[]')}catch(e){return[]}};
+function toggleBuy(name,el){const b=buyState();if(el.checked)b[name]=1;else delete b[name];localStorage.setItem(BUY,JSON.stringify(b));el.closest('.buyrow').classList.toggle('bought',el.checked)}
+function addBuy(){const i=document.getElementById('buyadd');const v=(i.value||'').trim();if(!v)return;const c=buyCustom();c.push(v);localStorage.setItem(BUYC,JSON.stringify(c));shoppingPage()}
+function delBuy(idx){const c=buyCustom();c.splice(idx,1);localStorage.setItem(BUYC,JSON.stringify(c));shoppingPage()}
+/* ---- メモ ---- */
+const noteKey=(id)=>'reform_note_'+id;
+function saveNote(id){const t=document.getElementById('noteArea');try{localStorage.setItem(noteKey(id),t.value)}catch(e){}const s=document.getElementById('noteSaved');if(s){s.textContent='保存しました';clearTimeout(window._nt);window._nt=setTimeout(()=>s.textContent='',1200)}}
+/* ---- 目次ジャンプ ---- */
+function jump(id){const e=document.getElementById(id);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})}
+/* ---- 工程の色（D） ---- */
+const PROC_COLOR={"床":"#6c5ce7","壁紙クロス":"#0fb9ac","塗装":"#e0873f","電気":"#3d9df6","水回り":"#2b7fe0","建具・窓":"#d83f7c","足場・下地":"#8a7cf0","解体・撤去":"#d0603a","洗浄":"#12b3a6","設備・仕上げ":"#7a8699"};
+const procColor=(p)=>PROC_COLOR[p]||"#6c5ce7";
+/* ---- 工程バッジ（A：難易度/所要/費用/注意） ---- */
+function badgesHtml(v){
+  const b=[];
+  const lic=licenseOf(v);
+  if(lic)b.push(`<span class="vb vb-lic">${ic('alert',13)}要資格：${esc(lic.replace('が必要',''))}</span>`);
+  if(v.difficulty)b.push(`<span class="vb vb-star">${ic('star',12,true)}難易度 ${v.difficulty}/5</span>`);
+  if(v.time&&v.time.label)b.push(`<span class="vb">${ic('clock',13)}${esc(v.time.label)}</span>`);
+  if(v.cost)b.push(`<span class="vb vb-cost">${ic('cart',13)}材料¥${Math.round(v.cost.materials.reduce((s,m)=>s+(m.perSqm||0),0)).toLocaleString()}/㎡〜</span>`);
+  const risk=(v.time&&v.time.risk||'').trim();
+  if(risk&&!/^(なし|無し|特になし)$/.test(risk))b.push(`<span class="vb vb-risk">${ic('alert',13)}${esc(risk.length>16?risk.slice(0,16)+'…':risk)}</span>`);
+  return b.length?`<div class="vbadges">${b.join('')}</div>`:'';
+}
+/* ---- 待ち時間（F） ---- */
+function waitsHtml(v){
+  const w=(v.time&&v.time.waits)||[]; if(!w.length)return'';
+  return `<h3>${ic('clock',15)}待ち時間（乾燥・養生など）</h3><ul class="toollist">${w.map(x=>`<li>${ic('clock',14)}<b>${esc(x.label)}</b> <span class="muted">${esc(x.time)}</span></li>`).join('')}</ul>`;
+}
+/* ---- Before→After（C） ---- */
+function beforeAfterHtml(v){
+  if(!v.hasImg) return '';
+  return `<div class="ba">
+    <div class="ba-item" onclick="lightbox('thumbs/${v.id}/before.jpg')"><span class="ba-tag">Before</span><img src="thumbs/${v.id}/before.jpg" loading="lazy" alt=""></div>
+    <div class="ba-arrow">${ic('chevron',22)}</div>
+    <div class="ba-item" onclick="lightbox('thumbs/${v.id}/after.jpg')"><span class="ba-tag after">After</span><img src="thumbs/${v.id}/after.jpg" loading="lazy" alt=""></div></div>`;
+}
+/* ---- ライトボックス（B） ---- */
+function lightbox(src){const l=document.getElementById('lightbox'),i=document.getElementById('lbimg');if(!l)return;i.src=src;l.classList.add('on')}
+function closeLightbox(){const l=document.getElementById('lightbox');if(l)l.classList.remove('on')}
+/* ---- 手順HTML（動画ページ・部屋アコーディオン共通） ---- */
+function stepsHtml(v){
+  return v.steps.map((s,i)=>{
+    const segs=(s.clips||[]).map(c=>`<button class="seg" onclick="playSegment(${c[0]},${c[1]},'${v.id}')">${ic('play',12,true)}${fmt(c[0])}–${fmt(c[1])}</button>`).join('');
+    const how=(s.how||[]).map(x=>`<li>${ic('chevron',15)}${gloss(esc(x))}</li>`).join('');
+    const tips=(s.tips||[]).map(x=>`<div class="tip">${ic('bulb',17)}<span>${gloss(esc(x))}</span></div>`).join('');
+    const ng=(s.ng||[]).map(x=>`<div class="ng">${ic('alert',17)}<span>${gloss(esc(x))}</span></div>`).join('');
+    const c0=(s.clips&&s.clips[0])||[0,0];
+    const ip=v.hasImg?`thumbs/${v.id}/step${i+1}.jpg`:(s.img?`thumbs/${v.id}/${esc(s.img)}`:null);
+    let thumb='';
+    if(v.hasFlow){
+      thumb=`<div class="flowstrip">${['f1','f2','f3'].map((sf,k)=>`<div class="fs-item" onclick="lightbox('thumbs/${v.id}/step${i+1}${sf}.jpg')"><img src="thumbs/${v.id}/step${i+1}${sf}.jpg" loading="lazy" alt=""><span class="fs-lab">${['① 開始','② 途中','③ 完了'][k]}</span></div>`).join('')}</div>`;
+    }else if(ip){
+      thumb=`<div class="step-thumb" onclick="lightbox('${ip}')"><img src="${ip}" loading="lazy" alt=""><span class="zoomhint">${ic('zoom',14)}</span><span class="thumb-time">${ic('play',10,true)}${fmt(c0[0])}</span></div>`;
+    }
+    const lic=stepNeedsLicense(s);
+    return `<div class="step${lic?' lic':''}" id="st-${i}"><div class="step-head"><span class="step-num">${i+1}</span><span class="step-name">${gloss(esc(s.name))}${lic?`<span class="step-lic">${ic('alert',12)}要資格</span>`:''}</span><span class="segs">${segs}</span></div>
+      <div class="step-body">${thumb}<div class="step-main">${s.purpose?`<div class="purpose">${gloss(esc(s.purpose))}</div>`:''}${how?`<ul class="how">${how}</ul>`:''}${tips}${ng}</div></div></div>`;
+  }).join('');
+}
+/* ---- 材料表＋道具リスト（材料/道具を自動判別） ---- */
+// 材料（消耗品・その場に残る必要物）判定
+const MAT_KW=/クッションフロア|ＣＦ|CF|ボンド|接着剤|接着|のり|糊|パテ|合板|コンパネ|ベニヤ|ビス|釘|ネジ|シート|塗料|ペンキ|ウレタン|ニス|クリア|ラッカー|漆|うるし|やすり|サンドペーパー|紙やすり|テープ|養生|マスカー|マスキング|断熱|スタイロ|グラスウール|根太|大引き|束石|鋼製束|プラ束|防蟻|ホウ酸|コーキング|シーリング|シーラント|シリコン|プライマー|シーラー|ミッチャクロン|カチオン|セメント|モルタル|目地|石膏|ボード|クロス|壁紙|木材|角材|薄板|垂木|フローリング|オフシリコン|脱脂|ジョイントコーク|リメイクシート|ダイノック|リアテック|網戸|網|ガラス|サッシ|洗剤|ハイター|ケミクール|エポキシ|瞬間接着|敷居テープ|障子紙|畳|便器|ウォシュレット|洗面台|化粧台|換気扇|ダウンライト|照明|コンセント|スイッチ|プレート|エアコン|VVF|ケーブル|配線|塩ビ管|継手|パネル|複合板|巾木|トタン|波板|防水|止水|フェルト|クッション/;
+// 工具の代用辞書
+const SUB_MAP=[
+ [/丸ノコ|丸のこ|マルノコ/,"手ノコ(のこぎり)で代用可・時間はかかる"],
+ [/インパクト|ドライバードリル|電動ドライバー/,"手回しドライバーで代用可(数が多いと大変)"],
+ [/(電動|ミニ|ランダム)?サンダー/,"紙やすり手作業で代用可"],
+ [/マルチツール/,"ノコ・ノミ・カッターで代用可"],
+ [/グラインダー/,"金ノコ・ヤスリで代用可"],
+ [/高圧洗浄/,"バケツ+ブラシ+ホースで代用可"],
+ [/レーザー水平器|レーザー墨/,"水平器・水糸で代用可"],
+ [/パーフェクトカッター|パーキリ|フロアカッター/,"普通のカッター+定規で代用可"],
+ [/コテバケ/,"刷毛・ローラーで代用可"],
+ [/のり付け機|糊付け機|糊付機/,"生のり付き壁紙なら機械不要"],
+ [/スプレーガン|吹き付け/,"刷毛・ローラーで代用可"],
+ [/タッカー/,"釘・ビスで代用可"],
+ [/圧着ローラー/,"塩ビパイプ端材で代用可"],
+ [/ジグソー/,"手ノコ・回し引きノコで代用可"],
+ [/ヒートガン|ドライヤー/,"自然乾燥で代用可(時間がかかる)"],
+ [/丸ノコガイド|ガイド定規/,"真っ直ぐな板を当てて代用可"],
+ [/クランプ/,"重し・手押さえで代用可"],
+ [/ホールソー/,"ドリル+ノコで代用可"],
+ [/真空ポンプ|フレアツール|トルクレンチ/,"エアコンは専用工具必須(取付は業者推奨)"],
+ [/ユンボ|重機/,"人力・スコップで代用可(重労働)"],
+ [/単管|足場/,"脚立で代用可(高所は安全優先)"],
+];
+function itemKind(name){return MAT_KW.test(name)?'材料':'道具';}
+function itemSub(name){for(const [re,txt] of SUB_MAP){if(re.test(name))return txt;}return '';}
+// 資格が必要な作業の判定（電気/ガス/給水本管）
+function licenseOf(v){
+  const txt=[...(v.processes||[]),...(v.methods||[]),(v.time&&v.time.risk||''),...(v.cautions||[])].join(' ');
+  if((v.processes||[]).includes('電気')||/電気工事士|電工[0-9二三]|コンセント(増設|移設)|スイッチ.{0,6}(配線|交換)|VVF|分電盤|専用回路|屋内配線|渡り線|電源(工事|配線)/.test(txt)) return '電気工事士（第二種）が必要';
+  if(/ガス(工事|管|栓|機器)/.test(txt)) return 'ガス機器設置の有資格者が必要';
+  if(/給水.{0,4}(本管|引込|接続)|水道本管|指定給水装置|給水装置工事/.test(txt)) return '指定給水装置工事事業者が必要';
+  return '';
+}
+const LIC_STEP=/電気工事士|コンセント|スイッチ|配線|VVF|分電盤|専用回路|渡り線|ダウンライト|照明.{0,4}(取付|交換|配線)|エアコン.{0,4}(電源|配線|取付)|ガス(工事|管|栓)|給水.{0,4}(本管|接続)/;
+function stepNeedsLicense(s){return LIC_STEP.test([s.name,...(s.how||[]),...(s.tips||[]),...(s.ng||[])].join(' '));}
+// 総集編/横断動画の判定（部屋の代表選定から外す）
+function isComp(v){return /総集編|ビフォーアフター|イッキ見|完全版|全工程まとめ|全記録|一挙公開|フルリノベ|全行程/.test(v.title||'')||(v.durationSec||0)>3000;}
+// 工程の代表動画（総集編を避け、焦点の合った動画＝工程数が少ない順を優先）
+function repVideo(vids,p){return vids.filter(v=>v.processes.includes(p)).sort((a,b)=>(isComp(a)?1:0)-(isComp(b)?1:0)||(a.processes||[]).length-(b.processes||[]).length)[0];}
+// 購入リンク（Amazon/モノタロウ検索）
+function cleanName(n){return String(n).split(/[（(]/)[0].split(/[／]/)[0].split(/[+＋]/)[0].replace(/等$|など$/,'').trim();}
+function shopLinks(name){const q=encodeURIComponent(cleanName(name));return `<span class="shoplinks"><a class="shoplink" href="https://www.amazon.co.jp/s?k=${q}" target="_blank" rel="noopener">${ic('cart',11)}Amazon</a><a class="shoplink" href="https://www.monotaro.com/s/?q=${q}" target="_blank" rel="noopener">モノタロウ</a></span>`;}
+// 着手前チェック（やりがちな失敗）
+function precheckHtml(v){
+  const items=(v.cautions||[]).slice(0,10);
+  if(!items.length) return '';
+  const pr=prog();const done=items.filter((c,i)=>pr['pre:'+v.id+':'+i]).length;
+  return `<details class="precheck"${done<items.length?' open':''}><summary>${ic('alert',16)}着手前チェック：やりがちな失敗 ${items.length}件（${done}/${items.length} 確認）</summary>
+    <div class="checklist" style="margin-top:8px">${items.map((c,i)=>{const key='pre:'+v.id+':'+i;const on=pr[key];
+      return `<label class="check ${on?'done':''}"><input type="checkbox" ${on?'checked':''} onchange="toggleCheck('${key}',this)"><div class="cn" style="font-weight:600">${gloss(esc(c))}</div></label>`;}).join('')}</div></details>`;
+}
+function matToolHtml(v){
+  let matRows='';
+  if(v.cost&&v.cost.materials&&v.cost.materials.length){
+    matRows=v.cost.materials.map(m=>`<tr><td><b>${gloss(esc(m.name))}</b><div style="margin-top:4px">${shopLinks(m.name)}</div></td><td>¥${m.perSqm.toLocaleString()}/㎡</td><td>${esc(m.qty||'')}</td><td class="muted">${esc(m.note||'')}</td></tr>`).join('');
+  }else{
+    const mats=(v.tools||[]).filter(t=>MAT_KW.test(t.name));
+    matRows=mats.map(t=>`<tr><td><b>${gloss(esc(t.name))}</b></td><td>${t.yen?'¥'+t.yen.toLocaleString():esc(t.price||'—')}</td><td>—</td><td class="muted">${esc(t.note||'')}</td></tr>`).join('');
+  }
+  const tools=(v.tools||[]).filter(t=>!MAT_KW.test(t.name));
+  const toolList=tools.map(t=>{const sub=itemSub(t.name);
+    return `<li>${ic('tool',15)}<b>${esc(t.name)}</b>${sub?`<span class="subtag">代用可</span>`:''} <span class="muted">${sub?esc(sub):esc(t.note||'')}${t.yen?' ・¥'+t.yen.toLocaleString():''}</span></li>`;}).join('');
+  return `${matRows?`<h3>${ic('cart',15)}材料（必要）</h3><div class="tablewrap"><table class="tbl"><tr><th>品名</th><th>単価/目安</th><th>数量</th><th>メモ</th></tr>${matRows}</table></div>`:''}
+    ${toolList?`<h3>${ic('tool',15)}道具（使い回し・代用可あり）</h3><ul class="toollist">${toolList}</ul>`:''}`;
+}
+function costMini(v){
+  const c=v.cost; if(!c) return '';
+  const ms=c.materials.reduce((s,m)=>s+(m.perSqm||0),0);
+  return `<h3>${ic('map',15)}費用（この工程）</h3><div class="muted">DIY材料 <b style="color:var(--primary-d)">¥${Math.round(ms).toLocaleString()}/㎡</b>（≈¥${Math.round(ms*1.62).toLocaleString()}/畳）　／　外注 ¥${c.pro.perSqmMin.toLocaleString()}〜${c.pro.perSqmMax.toLocaleString()}/㎡</div>`;
+}
+/* 部屋アコーディオンの本体（開いた時に描画） */
+function accBodyHtml(v){
+  return `<div class="rd">${gloss(esc(v.goal||''))}</div>
+    ${beforeAfterHtml(v)}
+    <h3>${ic('map',15)}手順</h3>${stepsHtml(v)}
+    ${matToolHtml(v)}
+    ${costMini(v)}
+    ${waitsHtml(v)}
+    <div class="muted" style="margin-top:16px"><a onclick="go('video/${v.id}')">${esc(v.series||'この工程')}の動画ページ ${ic('ext',13)}</a>　<button class="dobtn" style="padding:6px 12px;font-size:12.5px" onclick="go('do/${v.id}/0')">${ic('play',13,true)} 現場モード</button></div>`;
+}
+function fillAcc(d){
+  if(!d.open) return;
+  const body=d.querySelector('.acc-body');
+  if(body && body.dataset.filled) return;
+  const v=D.videos.find(x=>x.id===d.dataset.vid);
+  if(v){body.innerHTML=accBodyHtml(v);body.dataset.filled='1';}
+}
+/* ---- 費用のめやす ---- */
+const JOU=1.62; // 1畳≈1.62㎡(目安)
+function renderCost(v){
+  const c=v.cost; if(!c) return '';
+  const matSqm=c.materials.reduce((s,m)=>s+(m.perSqm||0),0);
+  const rj=c.ref.jou, rs=c.ref.sqm;
+  const matRoom=Math.round(matSqm*rs), pMin=Math.round(c.pro.perSqmMin*rs), pMax=Math.round(c.pro.perSqmMax*rs);
+  const rows=c.materials.map(m=>`<tr><td><b>${gloss(esc(m.name))}</b><div style="margin-top:4px">${shopLinks(m.name)}</div></td><td>¥${m.perSqm.toLocaleString()}/㎡</td><td>${esc(m.qty||'')}</td><td class="muted">${esc(m.note||'')}</td></tr>`).join('');
+  return `<h2 id="s-cost"><span class="bar"></span>費用のめやす（DIY材料費 vs 外注）</h2>
+  <div class="tablewrap"><table class="tbl"><tr><th>材料</th><th>㎡単価</th><th>数量めやす</th><th>実売の出典</th></tr>${rows}</table></div>
+  <div class="cost-grid">
+    <div class="cost-card diy"><div class="lab">DIY（材料費）</div><div class="big">¥${Math.round(matSqm).toLocaleString()}/㎡</div>
+      <div class="sub">≈ ¥${Math.round(matSqm*JOU).toLocaleString()}/畳　${rj}畳で約 <b>¥${matRoom.toLocaleString()}</b><br>＋道具 初期 約¥${(c.toolsOnce||0).toLocaleString()}（一度きり）</div></div>
+    <div class="cost-card pro"><div class="lab">外注（職人・材工共）</div><div class="big">¥${c.pro.perSqmMin.toLocaleString()}〜${c.pro.perSqmMax.toLocaleString()}/㎡</div>
+      <div class="sub">≈ ¥${Math.round(c.pro.perSqmMin*JOU).toLocaleString()}〜${Math.round(c.pro.perSqmMax*JOU).toLocaleString()}/畳　${rj}畳で約 <b>¥${pMin.toLocaleString()}〜${pMax.toLocaleString()}</b></div></div>
+  </div>
+  <div class="sim"><label>広さ</label><input id="simJou" type="number" min="0" step="0.5" value="${rj}" oninput="simCost('${v.id}')">畳
+    <span class="simout" id="simOut"></span></div>
+  <div class="muted">${esc(c.pro.note||'')}／出典: ${esc(c.pro.source||'')}。1畳≈1.62㎡で換算。材料の実売は店舗・数量で変動。</div>`;
+}
+function simCost(id){
+  const v=D.videos.find(x=>x.id===id); if(!v||!v.cost) return;
+  const j=Math.max(0,parseFloat((document.getElementById('simJou')||{}).value)||0);
+  const sqm=j*JOU, mat=v.cost.materials.reduce((s,m)=>s+(m.perSqm||0),0);
+  const mr=Math.round(mat*sqm), pmin=Math.round(v.cost.pro.perSqmMin*sqm), pmax=Math.round(v.cost.pro.perSqmMax*sqm);
+  const el=document.getElementById('simOut'); if(!el) return;
+  el.innerHTML=`= 材料 約¥${mr.toLocaleString()}／外注 約¥${pmin.toLocaleString()}〜${pmax.toLocaleString()}　<span class="save-badge" style="background:var(--mint-soft);color:#0a8f85;border-radius:8px;padding:3px 9px;font-weight:800">DIYで約¥${(pmin-mr).toLocaleString()}〜${(pmax-mr).toLocaleString()}お得</span>`;
+}
+
+/* ---- サイドナビ ---- */
+const NAVS=[['','home','ホーム'],['projects','book','まとめ'],['rooms','door','部屋から'],['procs','tool','工程から'],['estimate','route','見積り'],['flow','map','全体の順番'],['fails','alert','しくじり'],['troubles','help','困りごと'],['shopping','cart','買い物・道具']];
+function paintNav(active){
+  document.getElementById('nav').innerHTML=NAVS.map(([r,i,t])=>
+    `<div class="navlink ${active===r?'active':''}" onclick="go('${r}')">${ic(i,20)}<span class="txt">${t}</span></div>`).join('');
+}
+document.getElementById('brandlogo').innerHTML=ic('home',22);
+document.getElementById('searchic').innerHTML=ic('search',17);
+document.getElementById('mlogo').innerHTML=ic('home',18);
+document.getElementById('hamb').innerHTML=ic('menu',24);
+document.getElementById('lbclose').innerHTML=ic('close',22);
+
+/* ===== モバイル ハンバーガー ===== */
+function toggleNav(){document.body.classList.toggle('nav-open')}
+function closeNav(){document.body.classList.remove('nav-open')}
+
+/* ===== テーマ（既定=ライト。ボタンで切替、localStorage保存） ===== */
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);const b=document.getElementById('themebtn');if(b)b.innerHTML=(t==='dark'?ic('sun',18):ic('moon',18))+`<span>${t==='dark'?'ライトにする':'ダークにする'}</span>`;}
+function toggleTheme(){const nx=(document.documentElement.getAttribute('data-theme')==='dark')?'light':'dark';try{localStorage.setItem('reform_theme',nx)}catch(e){}applyTheme(nx);}
+applyTheme((()=>{try{return localStorage.getItem('reform_theme')}catch(e){return null}})()||'light');
+
+/* ===== 動画（start/end 区間・APIなし） ===== */
+const embedUrl=(id,from,to)=>`https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&playsinline=1${from!=null?`&start=${Math.floor(from)}&end=${Math.ceil(to)}&autoplay=1`:''}`;
+function playSegment(from,to,id){
+  const f=document.getElementById('ytframe'), now=document.getElementById('nowseg');
+  if(f){f.src=embedUrl(id,from,to);if(now)now.innerHTML=`区間 <b>${fmt(from)}–${fmt(to)}</b> を再生中`;f.scrollIntoView({behavior:'smooth',block:'center'});}
+  else window.open(ytUrl(id,from),'_blank');
+}
+
+/* ===== ルーティング ===== */
+function router(){
+  const h=location.hash.replace(/^#\/?/,'');const seg=h.split('/');const p=seg[0]||'';
+  paintNav(p);closeNav();
+  if(!p) return home();
+  if(p==='rooms') return roomsPage();
+  if(p==='room') return roomPage(decodeURIComponent(seg[1]||''));
+  if(p==='procs') return procsPage();
+  if(p==='process') return processPage(decodeURIComponent(seg[1]||''));
+  if(p==='projects') return projectsPage();
+  if(p==='project') return projectPage(decodeURIComponent(seg[1]||''));
+  if(p==='video') return videoPage(seg[1]);
+  if(p==='do') return fieldPage(seg[1], parseInt(seg[2])||0);
+  if(p==='flow') return flowPage();
+  if(p==='estimate') return estimatePage();
+  if(p==='troubles') return troublesPage();
+  if(p==='fails') return failsPage();
+  if(p==='saves') return savesPage();
+  if(p==='gallery') return galleryPage();
+  if(p==='glossary') return glossaryPage();
+  if(p==='shopping') return shoppingPage();
+  home();
+}
+window.addEventListener('hashchange',router);
+const cr=(...parts)=>`<div class="crumb">${parts.join(` ${ic('chevron',13)} `)}</div>`;
+const clink=(route,label)=>`<a onclick="go('${route}')">${label}</a>`;
+
+/* ===== ホーム ===== */
+function home(){
+  const cards=[
+    ['projects','book','t-amber','まとめ（物件別）','完成イメージ→流れ→各工程の詳細'],
+    ['rooms','door','t-violet','部屋から探す','今から手をつける部屋を選ぶ'],
+    ['procs','tool','t-mint','工程から探す','床・壁紙・塗装など作業から'],
+    ['flow','map','t-amber','全体の順番','家1軒を仕上げる時系列'],
+    ['fails','alert','t-pink','しくじり図鑑','先人の失敗・授業料に学ぶ'],
+    ['saves','bulb','t-mint','節約テク集','安く上げる・代用・廃材活用'],
+    ['gallery','star','t-amber','ビフォーアフター','126本の変化を一覧'],
+    ['glossary','book','t-violet','用語集','根太・大引き…用語をやさしく'],
+    ['troubles','help','t-pink','困りごとから','症状→原因→どの工程'],
+    ['shopping','cart','t-sky','買い物・道具','着手前にそろえる'],
+  ].map(([u,i,c,t,d])=>`<a class="card" onclick="go('${u}')"><div class="tile ${c}">${ic(i,26)}</div><div class="t">${t}</div><div class="d">${d}</div></a>`).join('');
+  // 進捗ダッシュボード
+  const pr=prog();const N=D.houseFlow.length;
+  const rowsD=D.roomOrder.map(r=>{
+    let done=0,next='完了';
+    for(const f of D.houseFlow){if(pr[`room:${r}:${f.no}`])done++;else if(next==='完了')next=f.name}
+    const pct=Math.round(done/N*100);
+    return `<div class="dashrow" onclick="go('room/${encodeURIComponent(r)}')"><span class="rname">${esc(r)}</span><span class="pbar"><span style="width:${pct}%"></span></span><span class="pct">${pct}%</span><span class="next">${done===N?'完了':'次：'+esc(next)}</span></div>`;
+  }).join('');
+  render(`<div class="crumb">START</div>
+  <h1>まずここから</h1>
+  <div class="lead">やりたいことに一番近い入口を選ぶだけ。分析元：<a href="${D.meta.channelUrl}" target="_blank">${esc(D.meta.channel)}</a> ／ 全${D.meta.total}本を手順書化（現在 ${D.videos.length}本 収録）</div>
+  ${goalMethodHtml()}
+  <div class="lead" style="margin-top:-2px">物件ごとの「完成イメージ→大まかな流れ→各工程の詳細」は <a onclick="go('projects')">まとめ（物件別）${ic('chevron',13)}</a> へ。</div>
+  <div class="grid">${cards}</div>
+  <h2><span class="bar" style="flex:none"></span>マイ進捗（あなたの家）</h2>
+  <div class="lead">部屋を選んでチェックを進めると、ここに進み具合と「次にやること」が出ます。</div>
+  <div class="dash">${rowsD}</div>`);
+}
+
+/* ===== 部屋一覧 ===== */
+function roomsPage(){
+  const cards=roomsPresent().map(r=>`<a class="card" onclick="go('room/${encodeURIComponent(r)}')"><div class="tile t-violet">${ic('door',26)}</div><div class="t">${esc(r)}</div><div class="n">${videosByRoom(r).length}本の動画 ${ic('chevron',14)}</div></a>`).join('');
+  render(`${cr(clink('','START'),'部屋から')}<h1>部屋から探す</h1>
+  <div class="lead">部屋を選ぶと、その中の工程（床・壁・天井・設備…）と判断・チェックリストへ。</div>
+  <div class="grid">${cards||'<div class="emptynote">収録待ち</div>'}</div>`);
+}
+
+/* ===== 部屋ページ ===== */
+function roomPage(r){
+  const vids=videosByRoom(r);
+  const info=(D.roomInfo||{})[r]||{}; const areaJou=info.jou||6; const A=D.processAction||{};
+  const procsOrdered=D.processOrder.filter(p=>vids.some(v=>v.processes.includes(p)))
+    .concat([...new Set(vids.flatMap(v=>v.processes))].filter(p=>!D.processOrder.includes(p)));
+  // 工程アコーディオン（開いた時だけ中身を描画＝lazy。総集編でなく焦点動画を代表に）
+  const cards=procsOrdered.map((p,i)=>{
+    const v=repVideo(vids,p);
+    const col=procColor(p);
+    return `<details class="acc${licenseOf(v)?' acc-lic':''}" style="border-left:4px solid ${col}" data-vid="${v.id}" ontoggle="fillAcc(this)"><summary class="acc-sum">
+      <span class="acc-ic" style="background:${col}1e;color:${col}">${ic(procIcon(p),22)}</span>
+      <span class="acc-t"><span class="acc-step">STEP ${i+1}・${esc(p)}</span><span class="acc-name">${esc(A[p]||p)}</span>${badgesHtml(v)}</span>
+      <span class="acc-caret">${ic('chevron',18)}</span></summary>
+      <div class="acc-body"><div class="muted" style="padding:10px 0">開くと手順・材料・道具・費用が表示されます…</div></div></details>`;
+  }).join('');
+  // 工程ごとの代表動画1本だけを使う（全動画合算だと物件が混ざり数百件に膨張するため）
+  const sqm=+(areaJou*JOU).toFixed(1);
+  const repByProc=procsOrdered.map(p=>({p,v:repVideo(vids,p)})).filter(x=>x.v);
+  // 材料＝代表動画の cost.materials（㎡単価つき）を名前で統合
+  const matMap={};
+  repByProc.forEach(({p,v})=>{(v.cost&&v.cost.materials||[]).forEach(m=>{const k=m.name;if(!matMap[k])matMap[k]={perSqm:m.perSqm||0,proc:new Set()};matMap[k].proc.add(p);});});
+  const matEntries=Object.entries(matMap);
+  const matTotal=Math.round(matEntries.reduce((s,[,m])=>s+(m.perSqm||0),0)*sqm);
+  // 道具＝代表動画の tools（材料でないもの）を統合
+  const toolMap={};
+  repByProc.forEach(({p,v})=>(v.tools||[]).forEach(t=>{if(itemKind(t.name)==='道具'){if(!toolMap[t.name])toolMap[t.name]={yen:t.yen,price:t.price,proc:new Set()};toolMap[t.name].proc.add(p);}}));
+  const matRows2=matEntries.map(([n,m])=>`<div class="buyrow"><input type="checkbox" onchange="this.closest('.buyrow').classList.toggle('bought',this.checked)"><span class="bn">${esc(n)}${shopLinks(n)}</span><span class="bproc">${[...m.proc].map(esc).join('・')}</span><span class="byen">${m.perSqm?'¥'+m.perSqm.toLocaleString()+'/㎡':''}</span></div>`).join('')||'<div class="buyrow muted">（この部屋の費用データは整備中）</div>';
+  const toolRows2=Object.entries(toolMap).map(([n,o])=>{const sub=itemSub(n);
+    return `<label class="buyrow"><input type="checkbox" onchange="this.closest('.buyrow').classList.toggle('bought',this.checked)"><span class="bn">${esc(n)}${sub?`<span class="subtag">代用可</span>`:''}</span><span class="bproc">${sub?esc(sub):[...o.proc].map(esc).join('・')}</span><span class="byen">${o.yen?'¥'+o.yen.toLocaleString():esc(o.price||'')}</span></label>`;}).join('')||'<div class="buyrow muted">（なし）</div>';
+  const buyBlock=`<h2><span class="bar"></span>この部屋の買い物</h2>
+    <h3 style="margin:6px 0 8px;color:var(--primary-d)">${ic('cart',15)} 材料（必要・消耗品）　<span class="total">${areaJou}畳で約 ¥${matTotal.toLocaleString()}</span></h3>
+    <div class="lead" style="margin:2px 0 8px">これが「この部屋を仕上げるのに要る材料」。㎡単価は上の費用のめやすと連動。</div>
+    <div class="buy-sum">${matRows2}</div>
+    <h3 style="margin:18px 0 8px;color:var(--sub)">${ic('tool',15)} 道具（1回買えば使い回し・代用可あり）</h3>
+    <div class="lead" style="margin:2px 0 8px">部屋の値段には含めない（他の部屋でも使う／安い物で代用できる）。緑の「代用可」は身近な物で代替OK。</div>
+    <div class="buy-sum">${toolRows2}</div>`;
+  // 部屋の費用まとめ（工程ごとに代表1本）
+  const costByProc=repByProc.filter(x=>x.v.cost);
+  let costBlock='';
+  if(costByProc.length){
+    let matSqm=0,proMin=0,proMax=0;
+    const rows=costByProc.map(({p,v})=>{
+      const ms=v.cost.materials.reduce((s,m)=>s+(m.perSqm||0),0);
+      matSqm+=ms; proMin+=v.cost.pro.perSqmMin; proMax+=v.cost.pro.perSqmMax;
+      return `<tr><td><b>${esc(A[p]||p)}</b><div class="muted">${esc(p)}</div></td><td>¥${Math.round(ms).toLocaleString()}/㎡</td><td>¥${Math.round(ms*sqm).toLocaleString()}</td><td>¥${Math.round(v.cost.pro.perSqmMin*sqm).toLocaleString()}〜${Math.round(v.cost.pro.perSqmMax*sqm).toLocaleString()}</td></tr>`;
+    }).join('');
+    window._roomCost={matSqm,proMin,proMax};
+    costBlock=`<h2><span class="bar"></span>この部屋の費用のめやす</h2>
+      <div class="lead">${esc(r)}を約${areaJou}畳（${sqm}㎡）と想定した概算。工程ごとの材料費（DIY）と外注相場。</div>
+      <div class="tablewrap"><table class="tbl"><tr><th>工程</th><th>材料㎡単価</th><th>${areaJou}畳の材料費</th><th>外注（材工共）</th></tr>${rows}</table></div>
+      <div class="sim"><label>広さ</label><input id="simJouR" type="number" min="0" step="0.5" value="${areaJou}" oninput="simRoom()">畳<span class="simout" id="simOutR"></span></div>
+      <div class="muted">材料費は道具の初期費用を含みません。外注は既存撤去・処分込みの相場。1畳≈1.62㎡換算。</div>`;
+  } else {
+    costBlock=`<h2><span class="bar"></span>この部屋の費用のめやす</h2><div class="emptynote">この部屋の工程はまだ費用データ整備中です（順次追加）。</div>`;
+  }
+  const pr=prog();
+  const checks=D.houseFlow.map(f=>{const key=`room:${r}:${f.no}`;const on=pr[key];
+    return `<label class="check ${on?'done':''}"><input type="checkbox" ${on?'checked':''} onchange="toggleCheck('${key}',this)"><div><div class="cn">${f.no}. ${esc(f.name)}</div><div class="cd">${esc(f.desc)}</div></div></label>`;
+  }).join('');
+  render(`${cr(clink('','START'),clink('rooms','部屋'),esc(r))}
+  <h1>${esc(r)}</h1>
+  ${info.note?`<div class="lead">${esc(info.note)}</div>`:''}
+  <h2><span class="bar"></span>やること（工程を順番に）</h2>
+  <div class="lead">各工程をタップで開くと、手順（画像・区間）・材料・道具・費用・コツが全部出ます。</div>
+  ${cards||'<div class="emptynote">まだこの部屋の動画は収録されていません。</div>'}
+  ${costBlock}
+  ${buyBlock}
+  <h2><span class="bar"></span>全体の段取りチェック（自動保存）</h2>
+  <div class="checklist">${checks}</div>`);
+  simRoom();
+}
+function simRoom(){
+  const c=window._roomCost; const el=document.getElementById('simOutR'); if(!c||!el) return;
+  const j=Math.max(0,parseFloat((document.getElementById('simJouR')||{}).value)||0); const sqm=j*JOU;
+  const mr=Math.round(c.matSqm*sqm), pmin=Math.round(c.proMin*sqm), pmax=Math.round(c.proMax*sqm);
+  el.innerHTML=`= 材料 約¥${mr.toLocaleString()}／外注 約¥${pmin.toLocaleString()}〜${pmax.toLocaleString()}　<span style="background:var(--mint-soft);color:#0a8f85;border-radius:8px;padding:3px 9px;font-weight:800">DIYで約¥${(pmin-mr).toLocaleString()}〜${(pmax-mr).toLocaleString()}お得</span>`;
+}
+
+/* ===== 工程一覧 ===== */
+function procsPage(){
+  const cards=procPresent().map(p=>`<a class="card" onclick="go('process/${encodeURIComponent(p)}')"><div class="tile t-mint">${ic(procIcon(p),26)}</div><div class="t">${esc(p)}</div><div class="n">${videosByProcess(p).length}本 ${ic('chevron',14)}</div></a>`).join('');
+  render(`${cr(clink('','START'),'工程から')}<h1>工程から探す</h1>
+  <div class="lead">工法の比較と、動画別の詳しい手順（分単位）。</div><div class="grid">${cards||'<div class="emptynote">収録待ち</div>'}</div>`);
+}
+
+/* ===== 工程ページ ===== */
+let _pf={proc:'',diff:'all',method:'all',sort:'easy'};
+function processPage(p){_pf={proc:p,diff:'all',method:'all',sort:'easy'};renderProcess();}
+function renderProcess(){
+  const p=_pf.proc; const all=videosByProcess(p);
+  let vids=all.slice();
+  if(_pf.diff!=='all')vids=vids.filter(v=>{const d=v.difficulty||3;return _pf.diff==='easy'?d<=2:_pf.diff==='mid'?d===3:d>=4;});
+  if(_pf.method!=='all')vids=vids.filter(v=>(v.methods||[]).includes(_pf.method));
+  vids.sort((a,b)=>_pf.sort==='easy'?(a.difficulty||3)-(b.difficulty||3):(b.date||'').localeCompare(a.date||''));
+  const methods=[...new Set(all.flatMap(v=>v.methods||[]))].sort();
+  const opt=(val,cur,label)=>`<option value="${val}" ${val===cur?'selected':''}>${label}</option>`;
+  const rows=vids.map(v=>`<tr><td><a onclick="go('video/${v.id}')"><b>${esc(v.series||'')}</b><br>${esc(v.title)}</a>${badgesHtml(v)}</td>
+     <td>${(v.methods||[]).slice(0,6).map(m=>`<span class="chip m">${esc(m)}</span>`).join('')}</td><td>${(v.rooms||[]).map(esc).join('・')}</td></tr>`).join('')
+     ||`<tr><td colspan="3"><div class="emptynote">条件に合う動画がありません</div></td></tr>`;
+  render(`${cr(clink('','START'),clink('procs','工程'),esc(p))}
+  <h1>${esc(p)}</h1>
+  <div class="filters">
+    <select onchange="_pf.diff=this.value;renderProcess()">${opt('all',_pf.diff,'難易度：すべて')}${opt('easy',_pf.diff,'やさしい ★1-2')}${opt('mid',_pf.diff,'ふつう ★3')}${opt('hard',_pf.diff,'むずかしい ★4-5')}</select>
+    <select onchange="_pf.method=this.value;renderProcess()"><option value="all">工法：すべて</option>${methods.map(m=>`<option ${m===_pf.method?'selected':''}>${esc(m)}</option>`).join('')}</select>
+    <select onchange="_pf.sort=this.value;renderProcess()">${opt('easy',_pf.sort,'やさしい順')}${opt('new',_pf.sort,'新しい順')}</select>
+  </div>
+  <h2><span class="bar"></span>この工程の動画（${vids.length}本）</h2>
+  <div class="tablewrap"><table class="tbl"><tr><th>動画</th><th>工法</th><th>部屋</th></tr>${rows}</table></div>
+  <div class="lead" style="margin-top:14px">各動画を開くと、作業ごとに「何分何秒〜」の区間で頭出し・Before/Afterも見られます。</div>`);
+}
+
+/* ===== 動画ページ ===== */
+function videoPage(id){
+  const v=D.videos.find(x=>x.id===id);if(!v)return home();
+  const dur=v.durationSec||1;
+  const steps=stepsHtml(v);
+  const mtbl=(v.methodTable||[]).map(m=>`<tr><td>${esc(m.room)}</td><td>${gloss(esc(m.diag))}</td><td><b>${esc(m.method)}</b></td><td>${gloss(esc(m.why))}</td></tr>`).join('');
+  const tools=(v.tools||[]).map(t=>{const isM=itemKind(t.name)==='材料';const sub=itemSub(t.name);
+    return `<tr><td><b>${gloss(esc(t.name))}</b>${isM?`<span class="subtag" style="background:var(--primary-soft);color:var(--primary-d)">材料</span>`:`<span class="subtag" style="background:var(--panel2);color:var(--sub)">道具</span>`}${sub?`<span class="subtag">代用可</span>`:''}${isM?`<div style="margin-top:4px">${shopLinks(t.name)}</div>`:''}</td><td>${t.yen?'¥'+t.yen.toLocaleString():esc(t.price||'')}</td><td>${sub?esc(sub):esc(t.note)}</td></tr>`;}).join('');
+  const flow=(v.flow||[]).map((f,i)=>`${i?`<span class="ar">${ic('chevron',16)}</span>`:''}<span class="flowchip"><span class="num">${i+1}</span>${esc(f)}</span>`).join('');
+  const cautions=(v.cautions||[]).map(c=>`<div class="ng">${ic('alert',17)}<span>${gloss(esc(c))}</span></div>`).join('');
+  const tl=v.steps.flatMap((s,i)=>(s.clips||[]).map(c=>({s,c}))).map(({s,c})=>{
+    const left=(c[0]/dur*100).toFixed(2),w=Math.max(0.7,(c[1]-c[0])/dur*100).toFixed(2);
+    return `<div class="tlseg" style="left:${left}%;width:${w}%" title="${esc(s.name)} ${fmt(c[0])}–${fmt(c[1])}" onclick="playSegment(${c[0]},${c[1]},'${v.id}')"></div>`;
+  }).join('');
+  const player=isFile
+    ? `<a class="thumb" href="${ytUrl(v.id)}" target="_blank" style="background-image:url('https://img.youtube.com/vi/${v.id}/hqdefault.jpg')"><span class="playbtn">${ic('play',30,true)}</span><span class="thumbcap">${ic('ext',15)}クリックでYouTubeを開く</span></a>`
+    : `<div class="player-wrap"><iframe id="ytframe" src="${embedUrl(v.id)}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen loading="lazy"></iframe></div>`;
+  const toc=`<aside class="toc"><div class="th">目次</div>
+    <a onclick="jump('s-goal')">ゴール</a><a onclick="jump('s-judge')">工法の判断</a><a onclick="jump('s-flow')">全体の順番</a>
+    ${v.hasImg?`<a onclick="jump('s-ba')">Before→After</a>`:''}<a onclick="jump('s-steps')">各作業の手順</a><a onclick="jump('s-tools')">道具・材料</a>${v.cost?`<a onclick="jump('s-cost')">費用のめやす</a>`:''}${(v.time&&v.time.waits&&v.time.waits.length)?`<a onclick="jump('s-wait')">所要・待ち時間</a>`:''}<a onclick="jump('s-caut')">失敗・注意</a>
+    <a onclick="jump('s-deps')">前後の工程</a><a onclick="jump('s-note')">自分メモ</a>
+    <button class="btn" style="width:100%;margin-top:10px" onclick="window.print()">${ic('ext',14)} 印刷 / PDF</button></aside>`;
+  render(`${cr(clink('','START'),clink('procs','工程'),`<a onclick="go('process/${encodeURIComponent(v.processes[0])}')">${esc(v.processes.join('・'))}</a>`,'動画')}
+  <h1>${esc(v.title)}</h1>
+  <div class="lead">${esc(v.series||'')} ／ ${fmt(v.durationSec)} ／ ${esc(v.date)} ／ 難易度 ${'★'.repeat(v.difficulty)}${'☆'.repeat(5-v.difficulty)}</div>
+  <div class="chips">${v.processes.map(x=>`<span class="chip">${ic(procIcon(x),15)}${esc(x)}</span>`).join('')}${v.rooms.map(x=>`<span class="chip">${ic('door',15)}${esc(x)}</span>`).join('')}${(v.methods||[]).map(x=>`<span class="chip m">${esc(x)}</span>`).join('')}</div>
+  ${badgesHtml(v)}
+  ${precheckHtml(v)}
+  <div class="vlayout"><div class="vmain">
+    <div class="player-card">${player}
+      <div class="player-bar"><span id="nowseg">${isFile?'各作業の「区間」を押すと、その時間からYouTubeが開きます':'各作業の「区間」を押すと、その部分だけ再生します'}</span><a href="${ytUrl(v.id)}" target="_blank">YouTubeで開く ${ic('ext',14)}</a></div></div>
+    <div class="timeline" title="各作業の位置。クリックで頭出し">${tl}</div>
+    <div class="tlnums"><span>0:00</span><span>${fmt(dur)}</span></div>
+    ${v.hasImg?`<h2 id="s-ba"><span class="bar"></span>Before → After</h2>${beforeAfterHtml(v)}`:''}
+
+    <h2 id="s-goal"><span class="bar"></span>ゴール（完成状態）</h2><div>${gloss(esc(v.goal))}</div>
+    <h2 id="s-judge"><span class="bar"></span>ゴールをどこから見据えるか</h2><div>${gloss(esc(v.goalFrom))}</div>
+    ${mtbl?`<div class="tablewrap" style="margin-top:12px"><table class="tbl"><tr><th>部屋</th><th>床の診断</th><th>選んだ工法</th><th>理由</th></tr>${mtbl}</table></div>`:''}
+    <h2 id="s-flow"><span class="bar"></span>全体の順番</h2><div class="flowline">${flow}</div>
+    <h2 id="s-steps"><span class="bar"></span>各作業の手順（画像・区間ボタンで頭出し）</h2>
+    <button class="dobtn" onclick="go('do/${v.id}/0')">${ic('play',15,true)} 現場モードで開く（1作業ずつ進める）</button>${steps}
+    <h2 id="s-tools"><span class="bar"></span>道具・材料</h2><div class="tablewrap"><table class="tbl"><tr><th>品目</th><th>目安</th><th>メモ</th></tr>${tools}</table></div>
+    ${renderCost(v)}
+    ${(v.time&&v.time.waits&&v.time.waits.length)?`<h2 id="s-wait"><span class="bar"></span>所要時間・待ち時間</h2><div class="lead">実作業の目安：<b>${esc(v.time.label||'')}</b>（下は乾燥・養生などの待ち時間）</div>${waitsHtml(v)}`:''}
+    <h2 id="s-caut"><span class="bar"></span>失敗・注意ポイント</h2>${cautions}
+    <h2 id="s-deps"><span class="bar"></span>前後工程の関係</h2>
+    <div class="dep"><span class="pill">前</span>${gloss(esc(v.deps?.before||''))}</div>
+    <div class="dep"><span class="pill">同時</span>${gloss(esc(v.deps?.same||''))}</div>
+    <div class="dep"><span class="pill">後</span>${gloss(esc(v.deps?.after||''))}</div>
+    <h2 id="s-note"><span class="bar"></span>自分メモ</h2>
+    <div class="note"><textarea id="noteArea" placeholder="うちは○○…寸法・買った物・気づき等を自由にメモ（自動保存）" oninput="saveNote('${v.id}')"></textarea><div class="saved" id="noteSaved"></div></div>
+  </div>${toc}</div>`);
+  const na=document.getElementById('noteArea');if(na){try{na.value=localStorage.getItem(noteKey(v.id))||''}catch(e){}}
+  if(v.cost) simCost(v.id);
+}
+
+/* ===== プロジェクト見積り＋やる/頼む仕分け ===== */
+let _est=null;
+function estInit(){if(_est)return;_est={};D.roomOrder.forEach(r=>{_est[r]={on:true,jou:(D.roomInfo[r]||{}).jou||6};});}
+function estToggle(r,el){estInit();_est[r].on=el.checked;estimatePage();}
+function estJou(r,val){estInit();_est[r].jou=Math.max(0,parseFloat(val)||0);estimatePage();}
+function roomCostAgg(r){
+  const vids=videosByRoom(r);
+  const procs=D.processOrder.filter(p=>vids.some(v=>v.processes.includes(p)));
+  let matSqm=0,proMin=0,proMax=0;const list=[];
+  procs.forEach(p=>{const v=vids.filter(x=>x.processes.includes(p))[0];if(v&&v.cost){const ms=v.cost.materials.reduce((s,m)=>s+(m.perSqm||0),0);matSqm+=ms;proMin+=v.cost.pro.perSqmMin;proMax+=v.cost.pro.perSqmMax;list.push({p,v,lic:licenseOf(v),ms,pmin:v.cost.pro.perSqmMin,pmax:v.cost.pro.perSqmMax});}});
+  return {matSqm,proMin,proMax,list};
+}
+function daysOf(label){
+  if(!label) return [1,1];
+  let s=String(label).replace(/約/g,'');
+  if(/週間/.test(s)){const m=s.match(/(\d+)/);const w=m?+m[1]:1;return [w*7,w*7];}
+  if(/数日/.test(s)) return [3,4];
+  const rg=s.match(/(\d+)\s*[〜～\-]\s*(\d+)\s*日/); if(rg)return [+rg[1],+rg[2]];
+  if(/半日\s*[〜～\-]\s*1日/.test(s)) return [0.5,1];
+  if(/半日/.test(s)) return [0.5,0.5];
+  const one=s.match(/(\d+)\s*日/); if(one)return [+one[1],+one[1]];
+  return [1,1];
+}
+function estimatePage(){
+  estInit();
+  let totMat=0,totProMin=0,totProMax=0;const roomRows=[];
+  let diyMat=0,diyProMin=0,diyProMax=0,proMin2=0,proMax2=0;const diyList=[],proList=[];
+  D.roomOrder.forEach(r=>{const st=_est[r];const rc=roomCostAgg(r);if(!rc.list.length)return;
+    const sqm=st.jou*JOU;const mat=Math.round(rc.matSqm*sqm);
+    if(st.on){totMat+=rc.matSqm*sqm;totProMin+=rc.proMin*sqm;totProMax+=rc.proMax*sqm;
+      rc.list.forEach(it=>{const im=Math.round(it.ms*sqm),ipmin=Math.round(it.pmin*sqm),ipmax=Math.round(it.pmax*sqm);
+        if(it.lic){proMin2+=ipmin;proMax2+=ipmax;proList.push({r,p:it.p,lic:it.lic,pmin:ipmin,pmax:ipmax,v:it.v});}
+        else{diyMat+=im;diyProMin+=ipmin;diyProMax+=ipmax;diyList.push({r,p:it.p,mat:im,v:it.v});}});}
+    roomRows.push(`<div class="dashrow"><label class="estroom"><input type="checkbox" ${st.on?'checked':''} onchange="estToggle('${r}',this)"><b>${esc(r)}</b></label><span class="estj"><input type="number" value="${st.jou}" min="0" step="0.5" oninput="estJou('${r}',this.value)">畳</span><span class="pct">材料¥${mat.toLocaleString()}</span></div>`);
+  });
+  const save=Math.round((totProMin+totProMax)/2 - totMat);
+  const A=D.processAction||{};
+  // C 材料数量 & D 工期（選択部屋ベース）
+  let selSqm=0,dMin=0,dMax=0;
+  D.roomOrder.forEach(r=>{const st=_est[r];if(!st||!st.on)return;
+    selSqm+=st.jou*JOU;
+    const vids=videosByRoom(r);
+    D.processOrder.filter(p=>vids.some(v=>(v.processes||[]).includes(p))).forEach(p=>{const v=repVideo(vids,p);if(v&&v.time){const d=daysOf(v.time.label);dMin+=d[0];dMax+=d[1];}});
+  });
+  const wallSqm=selSqm*2.6, r1=x=>Math.round(x*10)/10;
+  const qty=selSqm>0?[
+    ['床：クッションフロア（幅182cm）',r1(selSqm/1.82*1.1)+' m',`床${r1(selSqm)}㎡ ÷1.82幅 ×1.1ロス`],
+    ['床：CF用ボンド（3kg缶）',Math.ceil(selSqm/10)+' 缶','1缶≈10㎡'],
+    ['壁：生のり付き壁紙（幅92cm）',r1(wallSqm/0.92*1.05)+' m',`壁${Math.round(wallSqm)}㎡(床×2.6目安) ÷0.92 ×1.05`],
+    ['壁：石膏ボード（910×1820）',Math.ceil(wallSqm/1.656*1.1)+' 枚','壁面積 ÷1.656㎡ ×1.1'],
+    ['塗装：塗料（2度塗り）',r1(wallSqm/6)+' L','面積 ÷6㎡/L(2度塗り目安)'],
+    ['床下地：コーススレッド（ビス）',Math.ceil(selSqm*16)+' 本','@約303mm下地の目安'],
+  ]:[];
+  const qtyRows=qty.map(q=>`<tr><td>${esc(q[0])}</td><td class="qv"><b>${esc(q[1])}</b></td><td class="muted qn">${esc(q[2])}</td></tr>`).join('');
+  const wkWeeks=Math.ceil(dMax/2), wkMonths=r1(wkWeeks/4.3);
+  const eveDays=Math.ceil(dMax*2); // 平日夜=作業効率半分の目安→日数倍
+  const timeBlock=dMax>0?`<div class="cost-grid" style="margin-top:10px">
+      <div class="cost-card"><div class="lab">実働（乾燥待ち除く）</div><div class="big" style="color:var(--accent)">${r1(dMin)}〜${r1(dMax)}日</div><div class="sub">各工程の代表回の目安を合算</div></div>
+      <div class="cost-card"><div class="lab">週末だけ（土日=2日/週）</div><div class="big" style="color:var(--accent)">約${wkWeeks}週＝${wkMonths}ヶ月</div><div class="sub">まとまった休みが取れれば短縮</div></div>
+    </div>
+    <div class="muted" style="margin-top:8px">${ic('clock',13)} これに<b>乾燥・硬化の待ち時間</b>が別途入ります（パテ・ボンド・塗料は「塗って翌日」が基本）。待ちの間に別工程を進めると全体は縮みます。</div>`:'';
+  const diyRows=diyList.map(x=>`<div class="splitrow"><span class="bn">${esc(x.r)}／${esc(A[x.p]||x.p)}</span><span class="byen">材料¥${x.mat.toLocaleString()}</span><a onclick="go('video/${x.v.id}')">手順 ${ic('chevron',13)}</a></div>`).join('')||'<div class="muted" style="padding:10px">選択なし</div>';
+  const proRows=proList.map(x=>`<div class="splitrow lic"><span class="bn">${esc(x.r)}／${esc(A[x.p]||x.p)} <span class="subtag" style="background:var(--danger);color:#fff">要資格</span></span><span class="byen">外注¥${x.pmin.toLocaleString()}〜${x.pmax.toLocaleString()}</span><span class="muted" style="font-size:11px">${esc(x.lic.replace('が必要',''))}</span></div>`).join('')||'<div class="muted" style="padding:10px">要資格の工程なし</div>';
+  render(`<div class="crumb">見積り</div><h1>プロジェクト見積り</h1>
+  <div class="lead">直す部屋を選ぶと、材料費（DIY）・外注相場・DIYで浮く額を概算。畳数は変更可。</div>
+  <div class="dash">${roomRows.join('')}</div>
+  <div class="cost-grid" style="margin-top:16px">
+    <div class="cost-card diy"><div class="lab">DIY材料費（合計）</div><div class="big">¥${Math.round(totMat).toLocaleString()}</div><div class="sub">＋道具は使い回し・代用可（別途）</div></div>
+    <div class="cost-card pro"><div class="lab">全部プロに頼むと</div><div class="big">¥${Math.round(totProMin).toLocaleString()}〜${Math.round(totProMax).toLocaleString()}</div><div class="sub">材工共・撤去処分込みの相場</div></div>
+  </div>
+  <div class="save-big">${ic('star',18,true)} 自分でやれる所をDIYすると <b>約¥${save.toLocaleString()} お得</b></div>
+  <h2><span class="bar"></span>やる／頼む の仕分け</h2>
+  <h3 style="color:var(--accent-d)">${ic('check',15)} 自分でやる（無資格OK・材料費のみ）　材料 約¥${Math.round(diyMat).toLocaleString()}</h3>
+  <div class="split-box">${diyRows}</div>
+  <h3 style="color:var(--danger);margin-top:16px">${ic('alert',15)} プロに頼む（要資格）　外注 約¥${Math.round(proMin2).toLocaleString()}〜${Math.round(proMax2).toLocaleString()}</h3>
+  <div class="lead" style="margin:2px 0 6px">電気・ガス・給水本管は資格が必要。無理せず依頼を。</div>
+  <div class="split-box">${proRows}</div>
+  <h2 style="margin-top:22px"><span class="bar"></span>${ic('cart',18)} 材料はいくつ買う？（数量の目安）</h2>
+  <div class="lead">上で選んだ部屋の合計 <b>床${r1(selSqm)}㎡</b> から、代表的な材料の必要量を自動計算。買い出し前の目安に。</div>
+  ${selSqm>0?`<div class="tablewrap"><table class="tbl qtytbl"><tr><th>材料</th><th>必要量の目安</th><th>計算の前提</th></tr>${qtyRows}</table></div>
+  <div class="muted" style="margin-top:8px">※実際は割付・部屋の形・柄合わせで変わります。壁面積は天井高2.4m相当の概算（床×2.6）。少し多めに買うのが安全です。</div>`:'<div class="muted" style="padding:8px 0">上で部屋を選ぶと数量が出ます。</div>'}
+  <h2 style="margin-top:22px"><span class="bar"></span>${ic('clock',18)} どれくらいかかる？（工期の目安）</h2>
+  <div class="lead">選んだ部屋の作業時間をざっくり試算。</div>
+  ${timeBlock||'<div class="muted" style="padding:8px 0">上で部屋を選ぶと工期が出ます。</div>'}
+  <div class="muted" style="margin-top:14px">※材料費は道具の初期費用を含みません。相場・数量・工期はすべて目安（物件状態で変動）。</div>`);
+}
+
+/* ===== 現場モード（1作業ずつ） ===== */
+function fieldPage(id,i){
+  const v=D.videos.find(x=>x.id===id);if(!v)return home();
+  const steps=v.steps||[];if(!steps.length)return videoPage(id);
+  i=Math.max(0,Math.min(i,steps.length-1));const s=steps[i];
+  const c0=(s.clips&&s.clips[0])||[0,0];
+  const img=v.hasImg?`thumbs/${v.id}/step${i+1}.jpg`:null;
+  const key='field:'+v.id+':'+i;const done=prog()[key];const lic=stepNeedsLicense(s);
+  const how=(s.how||[]).map(x=>`<li>${gloss(esc(x))}</li>`).join('');
+  const tips=(s.tips||[]).map(x=>`<div class="tip">${ic('bulb',18)}<span>${gloss(esc(x))}</span></div>`).join('');
+  const ng=(s.ng||[]).map(x=>`<div class="ng">${ic('alert',18)}<span>${gloss(esc(x))}</span></div>`).join('');
+  render(`<div class="field">
+    <div class="field-top"><button class="fx" onclick="go('video/${v.id}')">${ic('close',20)} 通常表示</button><span class="field-count">${esc(s.name?'':'')}STEP ${i+1} / ${steps.length}</span></div>
+    <div class="field-prog"><span style="width:${Math.round((i+1)/steps.length*100)}%"></span></div>
+    <div class="field-body">
+      ${lic?`<div class="field-lic">${ic('alert',16)} この作業は要資格：${esc((licenseOf(v)||'').replace('が必要',''))}（プロに依頼）</div>`:''}
+      ${img?`<div class="field-img" onclick="lightbox('${img}')"><img src="${img}" alt=""><span class="thumb-time">${ic('play',12,true)}${fmt(c0[0])}</span></div>`:''}
+      <div class="field-name">${gloss(esc(s.name))}</div>
+      ${s.purpose?`<div class="field-purpose">${gloss(esc(s.purpose))}</div>`:''}
+      <button class="field-play" onclick="playSegment(${c0[0]},${c0[1]},'${v.id}')">${ic('play',18,true)} この作業の動画（${fmt(c0[0])}–${fmt(c0[1])}）</button>
+      ${how?`<h3 class="field-h">やり方</h3><ul class="field-how">${how}</ul>`:''}
+      ${tips?`<h3 class="field-h">コツ</h3>${tips}`:''}
+      ${ng?`<h3 class="field-h">注意</h3>${ng}`:''}
+    </div>
+    <div class="field-nav">
+      <button class="fnav" ${i===0?'disabled':''} onclick="go('do/${v.id}/${i-1}')">${ic('chevron',22)}前</button>
+      <button class="fcheck ${done?'on':''}" onclick="fieldCheck('${key}',${i},${steps.length},'${v.id}')">${done?ic('check',20,false)+'完了':'完了にする'}</button>
+      <button class="fnav" ${i>=steps.length-1?'disabled':''} onclick="go('do/${v.id}/${i+1}')">次${ic('chevron',22)}</button>
+    </div></div>`);
+}
+function fieldCheck(key,i,n,id){const p=prog();const now=!p[key];if(now)p[key]=1;else delete p[key];localStorage.setItem(LS,JSON.stringify(p));
+  if(now&&i<n-1){go('do/'+id+'/'+(i+1));}else{router();}}
+
+/* ===== 全体工程マップ ===== */
+function flowPage(){
+  const rows=D.houseFlow.map(f=>`<div class="rowitem"><div class="rt">${ic(f.icon||'tool',22)}</div><div><div class="rn">STEP ${f.no}</div><div class="rname">${esc(f.name)}</div><div class="rd">${esc(f.desc)}</div></div></div>`).join('');
+  render(`${cr(clink('','START'),'全体の順番')}<h1>全体工程マップ</h1>
+  <div class="lead">家1軒を仕上げる順。水漏れ・床下は最初、床は設備より前、が原則。</div>
+  <div class="steps-v">${rows}</div>`);
+}
+
+/* ===== まとめ（物件別 統合ロードマップ） ===== */
+function projName(v){return (v.series||'').replace(/\s*[#＃]\s*\d+.*$/,'').replace(/(床再生)?総集編$/,'').trim()||'その他';}
+function projectGroups(){
+  const g={};
+  D.videos.forEach(v=>{const p=projName(v);(g[p]=g[p]||[]).push(v);});
+  return Object.entries(g).map(([name,vids])=>({name,vids})).sort((a,b)=>b.vids.length-a.vids.length);
+}
+const PROJ_MIN=5;
+const majorProjects=()=>projectGroups().filter(g=>g.vids.length>=PROJ_MIN);
+const minorVids=()=>projectGroups().filter(g=>g.vids.length<PROJ_MIN).flatMap(g=>g.vids);
+function projComp(vids){return vids.filter(isComp).sort((a,b)=>(b.processes||[]).length-(a.processes||[]).length||(b.durationSec||0)-(a.durationSec||0))[0]||null;}
+const GOAL_METHOD=[
+  ['現状の“弱点”を先に見る','傾き・低い天井・小さい窓・水回りの生死・むき出しの配線。直す前に「この家の弱点」を洗い出す。'],
+  ['“直す”のではなく“成り立つ用途”でゴールを決める','弱点を消せなくても活きる使い方を決める（例：天井が低い便所→居室化せずパントリー化）。'],
+  ['仕上げより先に“工法”を決める','触るか／下地の生死／予算とゴミ量で、張替か重ね貼りか等を着手前に確定。ここで仕上がりの半分が決まる。'],
+  ['ゴールから逆算して“着手順”を組む','完成形から手戻りの少ない順番を引く（水回り・床下は最初、床は設備より前）。'],
+];
+function goalMethodHtml(){
+  return `<div class="goalbox"><div class="gb-h">${ic('target',18)}この人の「ゴールの描き方」— 最初にリフォーム後をどう想定するか</div>
+    <div class="gb-steps">${GOAL_METHOD.map((m,i)=>`<div class="gb-step"><span class="gb-no">${i+1}</span><div><b>${m[0]}</b><div class="gb-d">${m[1]}</div></div></div>`).join('')}</div></div>`;
+}
+function projectsPage(){
+  const majors=majorProjects();
+  const cards=majors.map(g=>{
+    const c=projComp(g.vids); const rooms=[...new Set(g.vids.flatMap(v=>v.rooms||[]))];
+    return `<a class="card" onclick="go('project/${encodeURIComponent(g.name)}')"><div class="tile t-amber">${ic('book',26)}</div>
+      <div class="t">${esc(g.name)}</div><div class="d">${g.vids.length}本${c?' ・総集編あり':''}<br>${esc(rooms.slice(0,4).join('・'))}</div></a>`;
+  }).join('');
+  const minors=minorVids();
+  const mlist=minors.map(v=>`<tr><td><a onclick="go('video/${v.id}')"><b>${esc(v.series||v.title)}</b></a></td><td>${(v.processes||[]).slice(0,4).map(esc).join('・')}</td></tr>`).join('');
+  render(`${cr(clink('','START'),'まとめ')}<h1>まとめ（物件別ロードマップ）</h1>
+   <div class="lead">総集編の「全体の順番」と、個別動画の「細かい作業」を1本の流れに統合。物件ごとに、完成イメージ→大まかな流れ→各工程の詳細まで通しで追えます。</div>
+   ${goalMethodHtml()}
+   <h2><span class="bar"></span>物件を選ぶ</h2>
+   <div class="grid">${cards||'<div class="emptynote">収録待ち</div>'}</div>
+   ${minors.length?`<h2><span class="bar"></span>単発・その他（${minors.length}本）</h2><div class="tablewrap"><table class="tbl"><tr><th>動画</th><th>工程</th></tr>${mlist}</table></div>`:''}`);
+}
+const epNo=v=>{const m=(v.series||'').match(/[#＃]\s*(\d+)/);return m?+m[1]:9999;};
+function completionGallery(vids){
+  const rooms=[...new Set(vids.flatMap(v=>v.rooms||[]))];
+  const byVid={};
+  for(const r of rooms){
+    const cand=vids.filter(v=>!isComp(v)&&v.hasImg&&(v.rooms||[]).includes(r)).sort((a,b)=>(a.rooms||[]).length-(b.rooms||[]).length||epNo(b)-epNo(a))[0];
+    if(!cand) continue;
+    (byVid[cand.id]=byVid[cand.id]||{v:cand,rooms:[]}).rooms.push(r);
+  }
+  const items=Object.values(byVid).sort((a,b)=>epNo(b.v)-epNo(a.v));
+  if(!items.length) return '';
+  return `<div class="cg-h">${ic('check',15)}完成写真（部屋ごと・一番仕上がった回のAfter）<span class="muted" style="font-weight:600;font-size:11.5px">写真クリックで動画へ</span></div>
+    <div class="cg">${items.map(it=>{const src=`thumbs/${it.v.id}/after.jpg`;const t=Math.floor((it.v.durationSec||600)*0.94);
+      return `<figure class="cg-item" onclick="go('video/${it.v.id}')" title="${esc(it.v.title)}"><img src="${src}" loading="lazy" alt=""><figcaption><span class="cg-room">${esc(it.rooms.join('・'))}</span><a class="cg-yt" href="${ytUrl(it.v.id,t)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ic('ext',11)}YouTube</a></figcaption><span class="cg-zoom" onclick="event.stopPropagation();lightbox('${src}')" title="拡大">${ic('zoom',13)}</span></figure>`;}).join('')}</div>`;
+}
+function projectPage(name){
+  const g=projectGroups().find(x=>x.name===name);
+  if(!g) return projectsPage();
+  const vids=g.vids, comps=vids.filter(isComp), comp=projComp(vids);
+  const indiv=vids.filter(v=>!isComp(v)).sort((a,b)=>epNo(a)-epNo(b)||(a.date||'').localeCompare(b.date||''));
+  const rooms=[...new Set(vids.flatMap(v=>v.rooms||[]))];
+  const face=comp||vids.slice().sort((a,b)=>(b.durationSec||0)-(a.durationSec||0))[0]||vids[0];
+  // 工程スパイン（正準順・この物件に存在する工程）＝「大まかな流れ」の帯
+  const procs=D.processOrder.filter(p=>vids.some(v=>(v.processes||[]).includes(p)))
+    .concat([...new Set(vids.flatMap(v=>v.processes||[]))].filter(p=>!D.processOrder.includes(p)));
+  const primaryProc=v=>procs.find(p=>(v.processes||[]).includes(p))||(v.processes||[])[0];
+  const flowStrip=procs.map((p,i)=>`${i?`<span class="ar">${ic('chevron',15)}</span>`:''}<span class="flowchip" style="border-color:${procColor(p)}55"><span class="num" style="background:${procColor(p)}">${i+1}</span>${ic(procIcon(p),13)}${esc(p)}</span>`).join('');
+  // やった順（エピソード#1→N）の詳細＝個別動画を1本ずつ。各動画は工程タグ付きで1回だけ登場
+  const nodes=indiv.map(v=>{
+    const pp=primaryProc(v), col=procColor(pp), n=epNo(v);
+    const chips=(v.processes||[]).map(p=>`<span class="chip" style="--cc:${procColor(p)}">${ic(procIcon(p),13)}${esc(p)}</span>`).join('');
+    return `<details class="acc rmep${licenseOf(v)?' acc-lic':''}" style="border-left:4px solid ${col}" data-vid="${v.id}" ontoggle="fillAcc(this)"><summary class="acc-sum">
+      <span class="ep-no"${n>=9999?' style="font-size:10px"':''}>${n>=9999?'—':'#'+n}</span>
+      <span class="acc-t"><span class="acc-name">${esc(v.title)}</span>
+        <span class="muted" style="font-size:12px">${esc(v.series||'')} ・ ${fmt(v.durationSec)}</span>
+        <span class="ep-chips">${chips}</span>${badgesHtml(v)}</span>
+      <span class="acc-caret">${ic('chevron',18)}</span></summary>
+      <div class="acc-body"><div class="muted" style="padding:10px 0">開くと手順・材料・費用が表示されます…</div></div></details>`;
+  }).join('');
+  const compLinks=comps.map(c=>`<a onclick="go('video/${c.id}')">${esc((c.title||'').slice(0,30))}…</a>`).join('　/　');
+  render(`${cr(clink('','START'),clink('projects','まとめ'),esc(name))}
+   <h1>${esc(name)}</h1>
+   <div class="lead">${vids.length}本（総集編${comps.length}／個別${indiv.length}）・${esc(rooms.join('・'))}</div>
+   <div class="goalbox"><div class="gb-h">${ic('flag',18)}完成イメージと逆算</div>
+     <div style="margin-bottom:8px"><b>目指す完成形：</b>${gloss(esc(face.goal||''))}</div>
+     <div><b>どこから見据えるか：</b>${gloss(esc(face.goalFrom||''))}</div>
+     ${completionGallery(vids)}
+     ${comps.length?`<div class="rm-comp" style="margin-top:10px;--pc:var(--accent)">${ic('map',14)}この物件の総集編（全体を通しで）：${compLinks}</div>`:''}
+   </div>
+   ${goalMethodHtml()}
+   <h2><span class="bar"></span>大まかな流れ（工程の全体像）</h2>
+   <div class="lead">総集編でつかむ「どの順で何をやるか」。各工程の詳しい比較は<a onclick="go('procs')">工程から探す</a>へ。</div>
+   <div class="flowwrap">${flowStrip}</div>
+   <h2 style="margin-top:26px"><span class="bar"></span>やった順に見る（${indiv.length}本）</h2>
+   <div class="lead">実際に作業した順（エピソード#1→）。各動画を開くと、その回の細かい手順（3コマ画像・コツ・材料・費用）が出ます。工程タグで「今どの段階か」も分かります。</div>
+   <div class="roadmap">${nodes}</div>`);
+}
+
+/* ===== 困りごと ===== */
+const DIAG=[
+ {id:'yuka',t:'床を直したい',q:'今の床の状態は？',opts:[
+   {l:'フカフカ・沈む・きしむ',r:'下地(根太・大引き・鋼製束)から補強/交換が必要。腐り・シロアリなら土台再生から。',to:'床'},
+   {l:'水回り(洗面/トイレ/キッチン)',r:'耐水のクッションフロア(CF)が最適。継目を作らない幅182cmで。',to:'床'},
+   {l:'既存の床が生きている',r:'重ね貼り(CFを上から)が安く早い。※剥がれ・カビ臭・フカフカが無いのが条件。',to:'床'},
+   {l:'段差なしで質感重視の居室',r:'フローリングの塗り直し(ウレタン)。段差ゼロで質感を活かせる。',to:'塗装'},
+ ]},
+ {id:'kabe',t:'壁をキレイにしたい',q:'今の壁は？',opts:[
+   {l:'砂壁・繊維壁・綿壁',r:'シーラーで固めてパテ→壁紙、または合板/石膏ボードで下地を作ってから貼る。',to:'壁紙クロス'},
+   {l:'古い壁紙が貼ってある',r:'剥がして下地パテ→張替。SP9782等ならパテ無し施工もいける場合あり。',to:'壁紙クロス'},
+   {l:'木部・柱を明るくしたい',r:'アク止め下地→白ペンキ塗装。グレーは失敗が目立ちにくい。',to:'塗装'},
+ ]},
+ {id:'furo',t:'お風呂を安く直したい',q:'浴室の状態は？',opts:[
+   {l:'汚れがひどいだけ',r:'塩素・アルカリ・酸の洗剤を汚れ別に使い分け＋高圧洗浄。まず洗って判断。',to:'洗浄'},
+   {l:'壁がボロボロ',r:'アルミ複合板パネル工法で新築風に(予算5万円台〜)。',to:'水回り'},
+   {l:'浴槽が色あせ・キズ',r:'浴槽塗装(パイロキープ等)で新品風に。',to:'水回り'},
+ ]},
+ {id:'setsubi',t:'設備を新しくしたい',q:'どの設備？',opts:[
+   {l:'トイレ',r:'和式→洋式/ウォシュレット化。給水は止水栓から、排水位置に注意。',to:'水回り'},
+   {l:'洗面台',r:'3万円クラスの既製品に交換。止水栓・排水トラップの接続がポイント。',to:'水回り'},
+   {l:'コンセント/照明/エアコン',r:'⚠ 配線・コンセント増設・エアコン電源は電気工事士の資格が必要。取付だけDIY・電源はプロへ。',to:'電気'},
+ ]},
+];
+let _diag={};
+function diagPick(id,i){_diag[id]=i;troublesPage();}
+function troublesPage(){
+  const cards=DIAG.map(d=>{const pick=_diag[d.id];
+    const opts=d.opts.map((o,i)=>`<button class="diagopt ${pick===i?'on':''}" onclick="diagPick('${d.id}',${i})">${esc(o.l)}</button>`).join('');
+    const ans=pick!=null?`<div class="diagans">${ic('check',16)}<div><b>${gloss(esc(d.opts[pick].r))}</b><div style="margin-top:6px"><a onclick="go('process/${encodeURIComponent(d.opts[pick].to)}')">${esc(d.opts[pick].to)}の工程・手順を見る ${ic('chevron',13)}</a></div></div></div>`:'';
+    return `<div class="diagcard"><div class="diagq">${esc(d.t)}<span>${esc(d.q)}</span></div><div class="diagopts">${opts}</div>${ans}</div>`;
+  }).join('');
+  const rows=D.troubles.map(t=>{
+    let link='';
+    if(t.to?.type==='process')link=`<a onclick="go('process/${encodeURIComponent(t.to.key)}')">${esc(t.to.key)}の工程へ</a>`;
+    if(t.to?.type==='video'){const v=D.videos.find(x=>x.id===t.to.key);link=v?`<a onclick="go('video/${v.id}')">${esc(v.series||v.title)}へ</a>`:''}
+    return `<tr><td><b>${esc(t.symptom)}</b></td><td>${esc(t.cause)}</td><td>${esc(t.hint)}</td><td>${link}</td></tr>`;
+  }).join('');
+  render(`${cr(clink('','START'),'困りごと')}<h1>困りごと・工法えらび</h1>
+  <div class="lead">やりたいことを選ぶと、状態に合った工法をおすすめします。</div>
+  <div class="diaggrid">${cards}</div>
+  <h2><span class="bar"></span>症状から逆引き</h2>
+  <div class="tablewrap"><table class="tbl"><tr><th>症状</th><th>原因</th><th>対処の要点</th><th>行き先</th></tr>${rows}</table></div>`);
+}
+
+/* ===== 買い物 ===== */
+function shoppingPage(){
+  const map={};
+  D.videos.forEach(v=>(v.tools||[]).forEach(t=>{map[t.name]=map[t.name]||{price:t.price,yen:t.yen,note:t.note,proc:new Set()};v.processes.forEach(p=>map[t.name].proc.add(p))}));
+  const b=buyState();let total=0,gotTotal=0;
+  const rows=Object.entries(map).map(([n,o])=>{
+    if(o.yen){total+=o.yen;if(b[n])gotTotal+=o.yen}
+    const on=b[n];
+    return `<div class="buyrow ${on?'bought':''}"><input type="checkbox" ${on?'checked':''} onchange="toggleBuy('${n.replace(/'/g,"\\'")}',this)">
+      <span class="bn">${esc(n)}</span><span class="bproc">${[...o.proc].map(esc).join('・')}</span><span class="byen">${o.yen?'¥'+o.yen.toLocaleString():esc(o.price||'')}</span></div>`;
+  }).join('');
+  const custom=buyCustom().map((n,i)=>`<div class="buyrow"><input type="checkbox" onchange="this.closest('.buyrow').classList.toggle('bought',this.checked)"><span class="bn">${esc(n)}</span><span class="bproc">自分で追加</span><button class="del" onclick="delBuy(${i})">×</button></div>`).join('');
+  // スターター道具（登場頻度TOP・道具のみ／材料は消耗品なので除外）
+  const freq={};D.videos.forEach(v=>(v.tools||[]).forEach(t=>{if(itemKind(t.name)!=='材料')freq[t.name]=(freq[t.name]||0)+1}));
+  const starter=Object.keys(freq).sort((a,b)=>freq[b]-freq[a]).slice(0,18);
+  const starterHtml=starter.map((n,i)=>{const sub=itemSub(n);const o=map[n]||{};
+    return `<div class="starter"><span class="st-rank">${i+1}</span><div class="st-b"><div class="st-n"><b>${esc(n)}</b><span class="st-freq">${freq[n]}本で使用</span>${sub?`<span class="subtag">代用可</span>`:''}</div>
+      ${sub?`<div class="st-sub">${ic('bulb',12)}${esc(sub)}</div>`:''}<div class="st-buy">${shopLinks(n)}${o.yen?`<span class="byen">¥${o.yen.toLocaleString()}〜</span>`:''}</div></div></div>`;}).join('');
+  render(`${cr(clink('','START'),'買い物・道具')}<h1>買い物・道具リスト</h1>
+  <div class="goalbox" style="margin-top:6px"><div class="gb-h">${ic('cart',18)}まずこれだけ！最初にそろえる道具セット（使用頻度TOP18）</div>
+    <div class="lead" style="margin:0 0 10px">全動画で登場回数が多い＝つぶしが効く道具から。<b>「代用可」は手持ちの安い道具で代替OK</b>（材料＝消耗品は下のリストへ）。</div>
+    <div class="startergrid">${starterHtml}</div></div>
+  <h2><span class="bar"></span>全品目リスト（買った管理つき）</h2>
+  <div class="buyhead"><span class="total">概算合計 ¥${total.toLocaleString()}</span><span class="lead" style="margin:0">購入済 ¥${gotTotal.toLocaleString()} ／ チェックで「買った」管理（保存されます）</span></div>
+  <div class="checklist">${rows}${custom}</div>
+  <div class="addbox"><input id="buyadd" placeholder="自分で品目を追加（例：養生テープ）" onkeydown="if(event.key==='Enter')addBuy()"><button onclick="addBuy()">追加</button></div>
+  <div class="lead" style="margin-top:10px">※概算合計は目安価格が分かる品目の合計。実売はお店・数量で変わります。</div>`);
+}
+
+/* ===== ビフォーアフター・ギャラリー ===== */
+function galleryPage(){
+  const vids=D.videos.filter(v=>v.hasImg).slice().sort((a,b)=>(a.series||'').localeCompare(b.series||'')||epNo(a)-epNo(b));
+  const cards=vids.map(v=>{
+    const bf=`thumbs/${v.id}/before.jpg`, af=`thumbs/${v.id}/after.jpg`;
+    const room=(v.rooms||[]).slice(0,2).join('・');
+    return `<figure class="ba" onclick="go('video/${v.id}')" title="${esc(v.title)}">
+      <img class="ba-after" src="${af}" loading="lazy" alt=""><img class="ba-before" src="${bf}" loading="lazy" alt="">
+      <span class="ba-tag ba-tagb">Before</span><span class="ba-tag ba-taga">After</span>
+      <figcaption><span class="ba-room">${esc(room||v.series||'')}</span><span class="ba-ser">${esc(v.series||'')}</span></figcaption></figure>`;
+  }).join('');
+  render(`${cr(clink('','START'),'ビフォーアフター')}<h1>ビフォーアフター・ギャラリー</h1>
+   <div class="lead">${vids.length}本の「どこまで変わるか」を一覧。<b>カードにマウスを乗せる（スマホはタップ）とBeforeに切り替わります</b>。クリックでその動画へ。</div>
+   <div class="bagrid">${cards}</div>`);
+}
+
+/* ===== 節約テク集 ===== */
+let _savesCache=null;
+function buildSaves(){
+  if(_savesCache) return _savesCache;
+  const re=/安|節約|代用|廃材|余っ|余り|流用|コスパ|激安|タダ|無料|浮く|抑え|セリア|ダイソー|100均|ホームセンター|中古|拾っ/;
+  const items=[];
+  D.videos.forEach(v=>{
+    const proc=(v.processes||[])[0]||'その他';
+    (v.steps||[]).forEach(s=>[...(s.tips||[]),...(s.how||[])].forEach(t=>{if(re.test(t))items.push({text:t,v,proc,step:s.name||''});}));
+  });
+  const byProc={};
+  items.forEach(it=>{(byProc[it.proc]=byProc[it.proc]||[]).push(it);});
+  _savesCache={items,byProc};
+  return _savesCache;
+}
+function saveItemHtml(it){
+  return `<div class="fail"><span class="fail-ic" style="color:var(--ok,#12b3a6)">${ic('bulb',16)}</span><div class="fail-b"><div class="fail-t">${gloss(esc(it.text))}</div>
+    <div class="fail-src"><a onclick="go('video/${it.v.id}')">${esc(it.v.series||it.v.title)}${it.step?'／'+esc(it.step):''} ${ic('chevron',12)}</a></div></div></div>`;
+}
+function savesPage(){
+  const {items,byProc}=buildSaves();
+  const procs=D.processOrder.filter(p=>byProc[p]).concat(Object.keys(byProc).filter(p=>!D.processOrder.includes(p)));
+  const accs=procs.map(p=>`<details class="acc" style="border-left:4px solid ${procColor(p)}" data-proc="${esc(p)}" ontoggle="fillSaves(this)"><summary class="acc-sum">
+      <span class="acc-ic" style="background:${procColor(p)}1e;color:${procColor(p)}">${ic(procIcon(p),20)}</span>
+      <span class="acc-t"><span class="acc-name">${esc(p)}</span><span class="muted" style="font-size:12.5px">${byProc[p].length}件の節約・代用</span></span>
+      <span class="acc-caret">${ic('chevron',18)}</span></summary>
+      <div class="acc-body"><div class="muted" style="padding:10px 0">開くと、この工程の節約・代用テクが出ます…</div></div></details>`).join('');
+  render(`${cr(clink('','START'),'節約テク集')}<h1>節約テク集</h1>
+   <div class="lead">全動画から「安く上げる・代用する・廃材を活かす」コツを集約（計${items.length}件）。低予算で仕上げるための引き出し。</div>
+   <div class="accgroup">${accs}</div>`);
+}
+function fillSaves(d){
+  if(!d.open) return;const body=d.querySelector('.acc-body');if(!body||body.dataset.filled)return;
+  const {byProc}=buildSaves();
+  body.innerHTML=`<div class="faillist">${(byProc[d.dataset.proc]||[]).map(saveItemHtml).join('')}</div>`;
+  body.dataset.filled='1';
+}
+
+/* ===== 用語集 ===== */
+function glossaryPage(){
+  const G=D.glossary||{};
+  const terms=Object.keys(G).sort((a,b)=>a.localeCompare(b,'ja'));
+  const items=terms.map(t=>`<div class="gl-item"><dt>${esc(t)}</dt><dd>${esc(typeof G[t]==='string'?G[t]:(G[t].def||G[t].d||''))}</dd></div>`).join('');
+  render(`${cr(clink('','START'),'用語集')}<h1>用語集</h1>
+   <div class="lead">DIYリフォームで出てくる言葉をやさしく解説（${terms.length}語）。手順の中の色つき用語にマウスを乗せても出ます。</div>
+   <input class="glsearch" placeholder="用語を検索（例：根太）" oninput="glFilter(this.value)">
+   <dl class="gllist">${items}</dl>
+   <div class="muted" id="glnone" style="display:none;padding:10px 0">該当する用語がありません</div>`);
+}
+function glFilter(q){q=(q||'').trim().toLowerCase();let n=0;
+  document.querySelectorAll('.gl-item').forEach(el=>{const hit=el.textContent.toLowerCase().includes(q);el.style.display=hit?'':'none';if(hit)n++;});
+  const none=document.getElementById('glnone');if(none)none.style.display=n?'none':'';}
+
+/* ===== しくじり図鑑（失敗・授業料集） ===== */
+let _failsCache=null;
+function buildFails(){
+  if(_failsCache) return _failsCache;
+  const yen=t=>{const m=t.match(/[0-9]+\s*万円|[0-9][0-9,]{2,}\s*円|¥\s*[0-9,]+/);return m?m[0]:null;};
+  const items=[];
+  D.videos.forEach(v=>{
+    const proc=(v.processes||[])[0]||'その他';
+    (v.cautions||[]).forEach(c=>items.push({text:c,v,proc,step:'',yen:yen(c)}));
+    (v.steps||[]).forEach(s=>(s.ng||[]).forEach(n=>items.push({text:n,v,proc,step:s.name||'',yen:yen(n)})));
+  });
+  const byProc={};
+  items.forEach(it=>{(byProc[it.proc]=byProc[it.proc]||[]).push(it);});
+  const tuition=items.filter(it=>it.yen);
+  _failsCache={items,byProc,tuition};
+  return _failsCache;
+}
+function failItemHtml(it){
+  return `<div class="fail"><span class="fail-ic">${ic('alert',16)}</span><div class="fail-b"><div class="fail-t">${gloss(esc(it.text))}</div>
+    <div class="fail-src">${it.yen?`<span class="tuition">${ic('alert',11)}授業料 ${esc(it.yen)}</span>`:''}<a onclick="go('video/${it.v.id}')">${esc(it.v.series||it.v.title)}${it.step?'／'+esc(it.step):''} ${ic('chevron',12)}</a></div></div></div>`;
+}
+function failsPage(){
+  const {items,byProc,tuition}=buildFails();
+  const procs=D.processOrder.filter(p=>byProc[p]).concat(Object.keys(byProc).filter(p=>!D.processOrder.includes(p)));
+  const tuitionTop=tuition.slice(0,20).map(failItemHtml).join('');
+  const accs=procs.map(p=>`<details class="acc" style="border-left:4px solid ${procColor(p)}" data-proc="${esc(p)}" ontoggle="fillFails(this)"><summary class="acc-sum">
+      <span class="acc-ic" style="background:${procColor(p)}1e;color:${procColor(p)}">${ic(procIcon(p),20)}</span>
+      <span class="acc-t"><span class="acc-name">${esc(p)}</span><span class="muted" style="font-size:12.5px">${byProc[p].length}件の失敗・注意</span></span>
+      <span class="acc-caret">${ic('chevron',18)}</span></summary>
+      <div class="acc-body"><div class="muted" style="padding:10px 0">開くと、この工程の失敗・注意が出ます…</div></div></details>`).join('');
+  render(`${cr(clink('','START'),'しくじり図鑑')}<h1>しくじり図鑑</h1>
+   <div class="lead">先人がやらかした失敗・注意を全動画から集約（計${items.length}件）。<b>着手前に読むと、お金と手戻りを大きく減らせます</b>。</div>
+   <h2><span class="bar"></span>${ic('alert',18)} 高くついた失敗（授業料つき・${tuition.length}件）</h2>
+   <div class="lead">実際に費用が出てしまった失敗。同じ穴を踏まないために。</div>
+   <div class="faillist">${tuitionTop||'<div class="muted">該当なし</div>'}</div>
+   <h2 style="margin-top:24px"><span class="bar"></span>工程別のしくじり</h2>
+   <div class="lead">やる工程を開くと、その作業でありがちな失敗・注意が出ます。</div>
+   <div class="accgroup">${accs}</div>`);
+}
+function fillFails(d){
+  if(!d.open) return;
+  const body=d.querySelector('.acc-body');
+  if(!body||body.dataset.filled) return;
+  const {byProc}=buildFails();
+  body.innerHTML=`<div class="faillist">${(byProc[d.dataset.proc]||[]).map(failItemHtml).join('')}</div>`;
+  body.dataset.filled='1';
+}
+
+/* ===== 検索 ===== */
+function onSearch(q){
+  q=q.trim();if(!q){router();return}
+  const ql=q.toLowerCase();const hits=[];
+  D.videos.forEach(v=>{
+    const hay=[v.title,v.series,...(v.rooms||[]),...(v.processes||[]),...(v.methods||[]),v.goal,v.goalFrom,...(v.cautions||[]),...(v.tools||[]).map(t=>t.name),...(v.steps||[]).flatMap(s=>[s.name,...(s.tips||[]),...(s.how||[])])].join(' ').toLowerCase();
+    if(hay.includes(ql)){
+      const sh=(v.steps||[]).filter(s=>[s.name,...(s.tips||[]),...(s.how||[])].join(' ').toLowerCase().includes(ql));
+      hits.push({v,sh});
+    }
+  });
+  paintNav('');
+  app.innerHTML=`<div class="crumb">検索：「${esc(q)}」</div><h1>検索結果 ${hits.length}件</h1>`+
+    (hits.length?hits.map(({v,sh})=>`<div class="step"><div class="step-head"><span class="step-name"><a onclick="go('video/${v.id}')">${esc(v.title)}</a></span></div>
+      <div class="purpose">${esc(v.series||'')}</div>
+      ${sh.map(s=>`<div class="tip">${ic('bulb',16)}<span>${esc(s.name)} ${(s.clips||[]).map(c=>`<a href="${ytUrl(v.id,c[0])}" target="_blank">${fmt(c[0])}–${fmt(c[1])}</a>`).join(' / ')}</span></div>`).join('')}</div>`).join(''):'<div class="emptynote">該当なし</div>');
+}
+
+router();
+</script>
+</body>
+</html>
