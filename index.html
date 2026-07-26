@@ -461,6 +461,28 @@ h3{font-size:14.5px;margin:16px 0 6px;font-weight:800}
 .cfchip{padding:5px 13px;border:1.5px solid var(--line);border-radius:999px;background:var(--panel);color:var(--tx);font-size:12.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .cfchip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .vrow-ch{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:3px}
+/* マイリスト：お気に入り＋履歴 */
+.vtitle-row{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.favbtn{flex:none;display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line);background:var(--panel);color:var(--sub);font-weight:800;font-size:12.5px;padding:7px 13px;border-radius:999px;cursor:pointer}
+.favbtn.on{background:#fff5e0;color:#d98b16;border-color:#f0c877}
+.favbtn.on .ic{color:#e8a91e}
+@media(prefers-color-scheme:dark){.favbtn.on{background:#3a3320;color:#f0c164;border-color:#6b5a2a}}
+.vchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.vchip{display:block;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 11px;cursor:pointer}
+.vchip-t{display:block;font-size:13px;font-weight:700;line-height:1.45;margin-bottom:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+/* 概念の3ch横並び */
+.cc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+@media(max-width:640px){.cc-grid{grid-template-columns:1fr}}
+.cc-col{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 13px}
+.cc-off{opacity:.6}
+.cc-h{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap}
+.cc-ph{margin:0 0 9px;padding-left:18px;display:grid;gap:5px}
+.cc-ph li{font-size:12.5px;line-height:1.5}
+.cc-vids{display:grid;gap:5px}
+.cc-v{font-size:12px;color:var(--accent);display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+.cmp-click{cursor:pointer}
+.cmp-click:hover{border-color:var(--accent)}
+.cmp-more{margin-left:auto;font-size:11px;color:var(--accent);display:inline-flex;align-items:center;gap:2px;white-space:nowrap}
 .roadmap{margin-top:12px}
 .rmnode{display:flex;gap:14px;position:relative;padding-bottom:20px}
 .rmnode:not(:last-child)::before{content:"";position:absolute;left:17px;top:38px;bottom:-2px;width:2px;background:var(--line)}
@@ -615,6 +637,24 @@ function chanBadge(v){const c=(D.channels||{})[v.channel||'hitori']||{};return `
 /* ---- 進捗 ---- */
 const LS='reform_progress_v1';
 const prog=()=>{try{return JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){return{}}};
+/* ---- マイリスト：お気に入り＋最近見た ---- */
+const FAVK='reform_fav_v1', HISTK='reform_hist_v1';
+const getFavs=()=>{try{return JSON.parse(localStorage.getItem(FAVK)||'[]')}catch(e){return[]}};
+const isFav=id=>getFavs().includes(id);
+function toggleFav(id){let f=getFavs();f=f.includes(id)?f.filter(x=>x!==id):[id,...f];try{localStorage.setItem(FAVK,JSON.stringify(f))}catch(e){}
+  const b=document.getElementById('favbtn');if(b){const on=f.includes(id);b.classList.toggle('on',on);b.innerHTML=ic('star',16,on)+(on?'保存済み':'お気に入り');}}
+const getHist=()=>{try{return JSON.parse(localStorage.getItem(HISTK)||'[]')}catch(e){return[]}};
+function pushHist(id){try{let hh=getHist().filter(x=>x!==id);hh.unshift(id);localStorage.setItem(HISTK,JSON.stringify(hh.slice(0,30)))}catch(e){}}
+function vChip(id){const v=D.videos.find(x=>x.id===id);if(!v)return'';return `<a class="vchip" onclick="go('video/${v.id}')"><span class="vchip-t">${esc(v.title)}</span><span class="vrow-ch">${chanBadge(v)}${(v.rooms||[]).slice(0,1).map(esc).join('')}</span></a>`;}
+function mylistPage(){
+  const favs=getFavs(),hist=getHist();
+  const grid=ids=>ids.map(vChip).filter(Boolean).join('')||'<div class="muted" style="padding:8px 0">まだありません。動画ページの★で追加できます。</div>';
+  render(`${cr(clink('','START'),'マイリスト')}<h1>マイリスト</h1>
+   <div class="lead">動画ページの★でお気に入り登録、開いた動画は自動で「最近見た」に入ります（この端末に保存）。</div>
+   <h2><span class="bar"></span>${ic('star',17,true)}お気に入り（${favs.length}）</h2><div class="vchips">${grid(favs)}</div>
+   <h2 style="margin-top:20px"><span class="bar"></span>${ic('clock',17)}最近見た（${hist.length}）</h2><div class="vchips">${grid(hist)}
+   ${hist.length?`<div style="margin-top:8px"><a class="muted" onclick="localStorage.removeItem('${HISTK}');mylistPage()">履歴を消す</a></div>`:''}</div>`);
+}
 function toggleCheck(k,el){const p=prog();if(el.checked)p[k]=1;else delete p[k];localStorage.setItem(LS,JSON.stringify(p));el.closest('.check').classList.toggle('done',el.checked)}
 
 /* ---- 用語ツールチップ ---- */
@@ -812,7 +852,7 @@ function simCost(id){
 }
 
 /* ---- サイドナビ ---- */
-const NAVS=[['','home','ホーム'],['projects','book','まとめ'],['rooms','door','部屋から'],['procs','tool','工程から'],['compare','search','定番/独自'],['channel/polepole','tool','ポレポレDIY'],['channel/odo','tool','DIY大家研究所'],['estimate','route','見積り'],['flow','map','全体の順番'],['fails','alert','しくじり'],['troubles','help','困りごと'],['shopping','cart','買い物・道具']];
+const NAVS=[['','home','ホーム'],['mylist','star','マイリスト'],['rooms','door','部屋から'],['procs','tool','工程から'],['compare','search','定番/独自'],['channel/polepole','tool','ポレポレDIY'],['channel/odo','tool','DIY大家研究所'],['projects','book','まとめ'],['estimate','route','見積り'],['flow','map','全体の順番'],['fails','alert','しくじり'],['troubles','help','困りごと'],['shopping','cart','買い物・道具']];
 function paintNav(active){
   document.getElementById('nav').innerHTML=NAVS.map(([r,i,t])=>
     `<div class="navlink ${active===r?'active':''}" onclick="go('${r}')">${ic(i,20)}<span class="txt">${t}</span></div>`).join('');
@@ -861,6 +901,8 @@ function router(){
   if(p==='gallery') return galleryPage();
   if(p==='glossary') return glossaryPage();
   if(p==='compare') return comparePage();
+  if(p==='concept') return conceptPage(decodeURIComponent(seg[1]||''),seg[2]||'methods');
+  if(p==='mylist') return mylistPage();
   if(p==='channel') return channelPage(seg[1]||'polepole');
   if(p==='shopping') return shoppingPage();
   home();
@@ -910,6 +952,7 @@ function home(){
   <h1>まずここから</h1>
   <div class="lead">やりたいことに一番近い入口を選ぶだけ。激安・空き家DIYの3チャンネル（<a href="${(D.channels.hitori||{}).url}" target="_blank">ひとりでできるマンDIY</a>127＋<a href="${(D.channels.polepole||{}).url}" target="_blank">ポレポレDIY</a>205＋<a href="${(D.channels.odo||{}).url}" target="_blank">DIY大家研究所</a>55）＝計${D.videos.length}本を手順書化。</div>
   <div class="homesearch"><span class="hsic">${ic('search',18)}</span><input id="homesearch" placeholder="作業・道具・部屋・材料で検索（例：床 CF、壁紙、シロアリ）" oninput="onSearch(this.value)"></div>
+  ${(getHist().length||getFavs().length)?`<div class="homesec"><div class="homesec-h"><span class="hs-t">続きから</span><span class="hs-sub"><a onclick="go('mylist')">マイリスト（お気に入り・履歴）${ic('chevron',12)}</a></span></div><div class="vchips">${getHist().slice(0,6).map(vChip).filter(Boolean).join('')||getFavs().slice(0,6).map(vChip).filter(Boolean).join('')}</div></div>`:''}
   ${goalMethodHtml()}
   ${secs}
   <h2><span class="bar" style="flex:none"></span>マイ進捗（あなたの家）</h2>
@@ -1049,6 +1092,7 @@ function renderProcess(){
 /* ===== 動画ページ ===== */
 function videoPage(id){
   const v=D.videos.find(x=>x.id===id);if(!v)return home();
+  pushHist(v.id);
   const dur=v.durationSec||1;
   const steps=stepsHtml(v);
   const mtbl=(v.methodTable||[]).map(m=>`<tr><td>${esc(m.room)}</td><td>${gloss(esc(m.diag))}</td><td><b>${esc(m.method)}</b></td><td>${gloss(esc(m.why))}</td></tr>`).join('');
@@ -1069,8 +1113,8 @@ function videoPage(id){
     <a onclick="jump('s-deps')">前後の工程</a><a onclick="jump('s-note')">自分メモ</a>
     <button class="btn" style="width:100%;margin-top:10px" onclick="window.print()">${ic('ext',14)} 印刷 / PDF</button></aside>`;
   render(`${cr(clink('','START'),clink('procs','工程'),(v.processes&&v.processes.length)?`<a onclick="go('process/${encodeURIComponent(v.processes[0])}')">${esc(v.processes.join('・'))}</a>`:esc((D.channels[v.channel]||{}).name||''),'動画')}
-  <h1>${esc(v.title)}</h1>
-  <div class="lead">${esc(v.series||'')} ／ ${fmt(v.durationSec)} ／ ${esc(v.date)} ／ 難易度 ${'★'.repeat(v.difficulty)}${'☆'.repeat(5-v.difficulty)}</div>
+  <div class="vtitle-row"><h1 style="margin:0">${esc(v.title)}</h1><button class="favbtn${isFav(v.id)?' on':''}" id="favbtn" onclick="toggleFav('${v.id}')">${ic('star',16,isFav(v.id))}${isFav(v.id)?'保存済み':'お気に入り'}</button></div>
+  <div class="lead">${chanBadge(v)} ${esc(v.series||'')} ／ ${fmt(v.durationSec)}${v.date?' ／ '+esc(v.date):''} ／ 難易度 ${'★'.repeat(v.difficulty||3)}${'☆'.repeat(5-(v.difficulty||3))}</div>
   <div class="chips">${v.processes.map(x=>`<span class="chip">${ic(procIcon(x),15)}${esc(x)}</span>`).join('')}${v.rooms.map(x=>`<span class="chip">${ic('door',15)}${esc(x)}</span>`).join('')}${(v.methods||[]).map(x=>`<span class="chip m">${esc(x)}</span>`).join('')}</div>
   ${badgesHtml(v)}
   ${precheckHtml(v)}
@@ -1490,9 +1534,9 @@ function renderCompare(){
   const std=cs.filter(c=>c.channels.length>=2).sort((a,b)=>b.channels.length-a.channels.length);
   const chs=Object.keys(D.channels||{});
   const card=(c)=>{const ex=conceptExamples(c,kind);
-    const exl=ex.slice(0,4).map(v=>`<a onclick="go('video/${v.id}')" class="cmp-ex chb-${v.channel}">${esc((D.channels[v.channel]||{}).handle||'')}</a>`).join('');
+    const exl=ex.slice(0,4).map(v=>`<a onclick="event.stopPropagation();go('video/${v.id}')" class="cmp-ex chb-${v.channel}">${esc((D.channels[v.channel]||{}).handle||'')}</a>`).join('');
     const tag=c.channels.length>=2?`<span class="ctag ct-std">定番 ${c.channels.length}/${N}</span>`:`<span class="ctag ct-uniq">独自・${esc(CHLABEL[c.channels[0]]||'')}</span>`;
-    return `<div class="cmp-item"><div class="cmp-h"><b>${esc(c.name)}</b>${tag}</div><div class="cmp-note">${esc(c.note||'')}</div><div class="cmp-exs">${exl}</div></div>`;};
+    return `<div class="cmp-item cmp-click" onclick="go('concept/${encodeURIComponent(c.name)}/${kind}')"><div class="cmp-h"><b>${esc(c.name)}</b>${tag}<span class="cmp-more">3ch比較${ic('chevron',12)}</span></div><div class="cmp-note">${esc(c.note||'')}</div><div class="cmp-exs">${exl}</div></div>`;};
   const seg=(k,label)=>`<button class="segbtn ${_cmpKind===k?'on':''}" onclick="cmpKind('${k}')">${label}</button>`;
   const chNames=chs.map(k=>(D.channels[k]||{}).name).join('／');
   const uniqSecs=chs.map(k=>{const u=cs.filter(c=>c.channels.length===1&&c.channels[0]===k);
@@ -1505,6 +1549,34 @@ function renderCompare(){
    <h2 style="margin-top:18px"><span class="bar"></span>定番（複数チャンネル共通＝一般的な${kind==='methods'?'作業':'資材'}）</h2>
    <div class="cmp-grid">${std.map(card).join('')}</div>
    ${uniqSecs}`);
+}
+/* ===== 概念の3チャンネル横並び比較 ===== */
+function conceptPage(name,kind){
+  kind=kind==='materials'?'materials':'methods';
+  const c=((D.xdict||{})[kind]||{concepts:[]}).concepts.find(x=>x.name===name);
+  if(!c) return comparePage();
+  const chs=Object.keys(D.channels||{});
+  const cols=chs.map(ch=>{
+    const phrases=new Set(); const vids=[];
+    D.videos.filter(v=>(v.channel||'hitori')===ch).forEach(v=>{
+      const pool=kind==='materials'?(v.materials||[]).concat((v.tools||[]).map(t=>t.name||t)):(v.methods||[]);
+      const matched=pool.filter(x=>(c.keywords||[]).some(k=>String(x).includes(k)));
+      if(matched.length){matched.forEach(m=>phrases.add(m));if(vids.length<6&&!vids.includes(v))vids.push(v);}
+    });
+    return {ch,uses:c.channels.includes(ch),phrases:[...phrases].slice(0,10),vids};
+  });
+  const colHtml=cols.map(o=>`<div class="cc-col${o.uses?'':' cc-off'}">
+     <div class="cc-h"><span class="chbadge chb-${o.ch}">${esc((D.channels[o.ch]||{}).name||o.ch)}</span>${o.uses?'':'<span class="ctag ct-none">なし</span>'}</div>
+     ${o.uses?`<ul class="cc-ph">${o.phrases.map(p=>`<li>${gloss(esc(p))}</li>`).join('')||'<li class="muted">—</li>'}</ul>
+       <div class="cc-vids">${o.vids.map(v=>`<a onclick="go('video/${v.id}')" class="cc-v">${ic('play',11,true)}${esc(v.title.slice(0,26))}…</a>`).join('')}</div>`
+      :'<div class="muted" style="padding:8px 0;font-size:12.5px">このチャンネルでは確認できず</div>'}</div>`).join('');
+  const usedN=c.channels.length;
+  render(`${cr(clink('','START'),clink('compare','定番/独自'),esc(c.name))}
+   <h1>${esc(c.name)}</h1>
+   <div class="cmp-h" style="margin-bottom:6px">${usedN>=2?`<span class="ctag ct-std">定番 ${usedN}/${nCh()}</span>`:`<span class="ctag ct-uniq">独自・${esc(CHLABEL[c.channels[0]]||'')}</span>`}<span class="muted">${kind==='methods'?'工法・技法':'資材'}</span></div>
+   <div class="lead">${esc(c.note||'')}</div>
+   <div class="lead" style="font-size:13px">各チャンネルが実際にどう呼び・どうやっているか（分析から抽出した表現）と、代表動画を横並びで比較。</div>
+   <div class="cc-grid">${colHtml}</div>`);
 }
 /* ===== チャンネル別（ポレポレDIY） ===== */
 function channelPage(ch){
