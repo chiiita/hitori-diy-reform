@@ -129,10 +129,11 @@ h3{font-size:14.5px;margin:16px 0 6px;font-weight:800}
 .seg:hover{background:var(--primary);color:#fff}
 .seg:hover .ic{color:#fff}
 .seg .ic{color:var(--primary-d)}
-.purpose{color:var(--sub);font-size:13px;margin:11px 0 4px}
-.how{margin:9px 0;padding:0;list-style:none}
-.how li{position:relative;padding:4px 0 4px 24px;font-size:14px}
-.how li .ic{position:absolute;left:2px;top:5px;color:var(--primary)}
+.purpose{color:var(--tx);font-size:13.5px;margin:10px 0 6px;padding-left:11px;border-left:3px solid var(--line);line-height:1.6}
+.how{margin:10px 0;padding:0;list-style:none}
+.how li{position:relative;padding:7px 0 7px 26px;font-size:14px;line-height:1.68}
+.how li:not(:last-child){border-bottom:1px dashed var(--line)}
+.how li .ic{position:absolute;left:2px;top:9px;color:var(--primary)}
 .tip,.ng{padding:9px 13px;border-radius:11px;margin:7px 0;font-size:13px;display:flex;gap:9px;align-items:flex-start;line-height:1.6}
 .tip .ic,.ng .ic{margin-top:2px}
 .tip{background:var(--mint-soft);color:#0a8f85}
@@ -446,6 +447,20 @@ h3{font-size:14.5px;margin:16px 0 6px;font-weight:800}
 .methodlist{display:grid;gap:6px}
 .mrow{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;line-height:1.55}
 .mrow .ctag{flex:none;margin-top:1px}
+/* ホーム：グループ＋前面検索 */
+.homesearch{display:flex;align-items:center;gap:9px;background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:11px 15px;margin:14px 0 6px}
+.homesearch:focus-within{border-color:var(--accent)}
+.homesearch .hsic{color:var(--sub);display:flex}
+.homesearch input{flex:1;border:none;background:transparent;color:var(--tx);font-size:15px;outline:none}
+.homesec{margin-top:18px}
+.homesec-h{display:flex;align-items:baseline;gap:10px;margin-bottom:9px;border-bottom:2px solid var(--line);padding-bottom:6px}
+.hs-t{font-size:16px;font-weight:800}
+.hs-sub{font-size:12.5px;color:var(--sub)}
+/* 検索結果・部屋/工程のチャンネル絞り込みチップ */
+.chanfilter{display:flex;flex-wrap:wrap;gap:7px;margin:4px 0 12px}
+.cfchip{padding:5px 13px;border:1.5px solid var(--line);border-radius:999px;background:var(--panel);color:var(--tx);font-size:12.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.cfchip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.vrow-ch{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:3px}
 .roadmap{margin-top:12px}
 .rmnode{display:flex;gap:14px;position:relative;padding-bottom:20px}
 .rmnode:not(:last-child)::before{content:"";position:absolute;left:17px;top:38px;bottom:-2px;width:2px;background:var(--line)}
@@ -576,9 +591,9 @@ const procIcon=(p)=>({"床":"floor","壁紙クロス":"wall","塗装":"brush","�
 const HV=()=>D.videos.filter(v=>(v.channel||'hitori')==='hitori');  // HitoriDiy(画像リッチ)
 const PV=()=>D.videos.filter(v=>v.channel==='polepole');            // ポレポレ(リスト)
 const videosByRoom=(r)=>HV().filter(v=>v.rooms.includes(r));
-const videosByProcess=(p)=>HV().filter(v=>v.processes.includes(p));
+const videosByProcess=(p)=>D.videos.filter(v=>(v.processes||[]).includes(p));  // 3ch横断
 function roomsPresent(){const s=new Set();HV().forEach(v=>v.rooms.forEach(r=>s.add(r)));return D.roomOrder.filter(r=>s.has(r)).concat([...s].filter(r=>!D.roomOrder.includes(r)))}
-function procPresent(){const s=new Set();HV().forEach(v=>v.processes.forEach(p=>s.add(p)));return D.processOrder.filter(p=>s.has(p)).concat([...s].filter(p=>!D.processOrder.includes(p)))}
+function procPresent(){const s=new Set();D.videos.forEach(v=>(v.processes||[]).forEach(p=>s.add(p)));return D.processOrder.filter(p=>s.has(p)).concat([...s].filter(p=>!D.processOrder.includes(p)))}
 /* ===== 横断辞書：定番/独自の判定 ===== */
 function conceptOf(phrase,kind){
   const list=(D.xdict&&D.xdict[kind==='material'?'materials':'methods'].concepts)||[];
@@ -855,23 +870,35 @@ const cr=(...parts)=>`<div class="crumb">${parts.join(` ${ic('chevron',13)} `)}<
 const clink=(route,label)=>`<a onclick="go('${route}')">${label}</a>`;
 
 /* ===== ホーム ===== */
-function home(){
-  const cards=[
-    ['projects','book','t-amber','まとめ（物件別）','完成イメージ→流れ→各工程の詳細'],
-    ['rooms','door','t-violet','部屋から探す','今から手をつける部屋を選ぶ'],
-    ['procs','tool','t-mint','工程から探す','床・壁紙・塗装など作業から'],
-    ['flow','map','t-amber','全体の順番','家1軒を仕上げる時系列'],
-    ['compare','search','t-mint','定番 vs 独自','3チャンネルで一般的か判定'],
-    ['channel/polepole','tool','t-violet','ポレポレDIY','もう1チャンネル205本の手順'],
-    ['channel/odo','tool','t-sky','DIY大家研究所','賃貸大家DIY 55本の手順'],
-    ['fails','alert','t-pink','しくじり図鑑','先人の失敗・授業料に学ぶ'],
-    ['saves','bulb','t-mint','節約テク集','安く上げる・代用・廃材活用'],
-    ['gallery','star','t-amber','ビフォーアフター','126本の変化を一覧'],
-    ['glossary','book','t-violet','用語集','根太・大引き…用語をやさしく'],
+const HOME_GROUPS=[
+  ['探す','まず作業を見つける',[
+    ['rooms','door','t-violet','部屋から探す','浴室・キッチン・床…部屋を選ぶ'],
+    ['procs','tool','t-mint','工程から探す','床・壁紙・塗装など作業の種類から'],
     ['troubles','help','t-pink','困りごとから','症状→原因→どの工程'],
-    ['shopping','cart','t-sky','買い物・道具','着手前にそろえる'],
-  ].map(([u,i,c,t,d])=>`<a class="card" onclick="go('${u}')"><div class="tile ${c}">${ic(i,26)}</div><div class="t">${t}</div><div class="d">${d}</div></a>`).join('');
-  // 進捗ダッシュボード
+  ]],
+  ['比べる','3チャンネルで一般的か見る',[
+    ['compare','search','t-mint','定番 vs 独自','3ch比較で「その作業は一般的か」'],
+    ['channel/polepole','tool','t-violet','ポレポレDIY','205本の手順リスト'],
+    ['channel/odo','tool','t-sky','DIY大家研究所','賃貸大家DIY 55本'],
+  ]],
+  ['段取り・準備','着手前にそろえる・見積る',[
+    ['estimate','route','t-amber','見積り・数量・工期','費用/必要量/どれくらいかかる'],
+    ['shopping','cart','t-sky','買い物・道具','最初にそろえる道具セット'],
+    ['flow','map','t-amber','全体の順番','家1軒を仕上げる時系列'],
+  ]],
+  ['学ぶ・見る','失敗・コツ・変化から学ぶ',[
+    ['projects','book','t-amber','まとめ（物件別）','完成イメージ→流れ→詳細'],
+    ['fails','alert','t-pink','しくじり図鑑','先人の失敗・授業料に学ぶ'],
+    ['saves','bulb','t-mint','節約テク集','安く・代用・廃材活用'],
+    ['gallery','star','t-amber','ビフォーアフター','126本の変化を一覧'],
+    ['glossary','book','t-violet','用語集','根太・大引き…をやさしく'],
+  ]],
+];
+function home(){
+  const secs=HOME_GROUPS.map(([g,sub,items])=>{
+    const cards=items.map(([u,i,c,t,d])=>`<a class="card" onclick="go('${u}')"><div class="tile ${c}">${ic(i,24)}</div><div class="t">${t}</div><div class="d">${d}</div></a>`).join('');
+    return `<div class="homesec"><div class="homesec-h"><span class="hs-t">${g}</span><span class="hs-sub">${sub}</span></div><div class="grid">${cards}</div></div>`;
+  }).join('');
   const pr=prog();const N=D.houseFlow.length;
   const rowsD=D.roomOrder.map(r=>{
     let done=0,next='完了';
@@ -881,10 +908,10 @@ function home(){
   }).join('');
   render(`<div class="crumb">START</div>
   <h1>まずここから</h1>
-  <div class="lead">やりたいことに一番近い入口を選ぶだけ。分析元：<a href="${(D.channels.hitori||{}).url}" target="_blank">ひとりでできるマンDIY</a>（画像つき127本）＋<a href="${(D.channels.polepole||{}).url}" target="_blank">ポレポレDIY</a>（205本）＋<a href="${(D.channels.odo||{}).url}" target="_blank">DIY大家研究所</a>（55本）＝計${D.videos.length}本。<a onclick="go('compare')">${Object.keys(D.channels||{}).length}チャンネル比較で「その作業が一般的か」も分かります ${ic('chevron',13)}</a></div>
+  <div class="lead">やりたいことに一番近い入口を選ぶだけ。激安・空き家DIYの3チャンネル（<a href="${(D.channels.hitori||{}).url}" target="_blank">ひとりでできるマンDIY</a>127＋<a href="${(D.channels.polepole||{}).url}" target="_blank">ポレポレDIY</a>205＋<a href="${(D.channels.odo||{}).url}" target="_blank">DIY大家研究所</a>55）＝計${D.videos.length}本を手順書化。</div>
+  <div class="homesearch"><span class="hsic">${ic('search',18)}</span><input id="homesearch" placeholder="作業・道具・部屋・材料で検索（例：床 CF、壁紙、シロアリ）" oninput="onSearch(this.value)"></div>
   ${goalMethodHtml()}
-  <div class="lead" style="margin-top:-2px">物件ごとの「完成イメージ→大まかな流れ→各工程の詳細」は <a onclick="go('projects')">まとめ（物件別）${ic('chevron',13)}</a> へ。</div>
-  <div class="grid">${cards}</div>
+  ${secs}
   <h2><span class="bar" style="flex:none"></span>マイ進捗（あなたの家）</h2>
   <div class="lead">部屋を選んでチェックを進めると、ここに進み具合と「次にやること」が出ます。</div>
   <div class="dash">${rowsD}</div>`);
@@ -966,6 +993,7 @@ function roomPage(r){
   ${cards||'<div class="emptynote">まだこの部屋の動画は収録されていません。</div>'}
   ${costBlock}
   ${buyBlock}
+  ${otherChanRoomHtml(r)}
   <h2><span class="bar"></span>全体の段取りチェック（自動保存）</h2>
   <div class="checklist">${checks}</div>`);
   simRoom();
@@ -977,6 +1005,14 @@ function simRoom(){
   el.innerHTML=`= 材料 約¥${mr.toLocaleString()}／外注 約¥${pmin.toLocaleString()}〜${pmax.toLocaleString()}　<span style="background:var(--mint-soft);color:#0a8f85;border-radius:8px;padding:3px 9px;font-weight:800">DIYで約¥${(pmin-mr).toLocaleString()}〜${(pmax-mr).toLocaleString()}お得</span>`;
 }
 
+function otherChanRoomHtml(r){
+  const list=D.videos.filter(v=>v.channel!=='hitori'&&(v.rooms||[]).some(x=>x.includes(r)||r.includes(x.replace(/[（(].*$/,''))));
+  if(!list.length) return '';
+  const rows=list.map(v=>`<tr><td><a onclick="go('video/${v.id}')">${esc(v.title)}</a><div class="vrow-ch">${chanBadge(v)}${(v.processes||[]).slice(0,3).map(p=>`<span class="chip" style="--cc:${procColor(p)}">${ic(procIcon(p),12)}${esc(p)}</span>`).join('')}</div></td></tr>`).join('');
+  return `<h2 style="margin-top:20px"><span class="bar"></span>他チャンネルの「${esc(r)}」（ポレポレ／大家研究所）</h2>
+   <div class="lead">同じ部屋を別チャンネルではどう直しているか。手順リスト＋YouTube時間リンク。</div>
+   <div class="tablewrap"><table class="tbl">${rows}</table></div>`;
+}
 /* ===== 工程一覧 ===== */
 function procsPage(){
   const cards=procPresent().map(p=>`<a class="card" onclick="go('process/${encodeURIComponent(p)}')"><div class="tile t-mint">${ic(procIcon(p),26)}</div><div class="t">${esc(p)}</div><div class="n">${videosByProcess(p).length}本 ${ic('chevron',14)}</div></a>`).join('');
@@ -986,28 +1022,28 @@ function procsPage(){
 
 /* ===== 工程ページ ===== */
 let _pf={proc:'',diff:'all',method:'all',sort:'easy'};
-function processPage(p){_pf={proc:p,diff:'all',method:'all',sort:'easy'};renderProcess();}
+function processPage(p){_pf={proc:p,chan:'all',sort:'ch'};renderProcess();}
+function pfChan(c){_pf.chan=c;renderProcess();}
 function renderProcess(){
   const p=_pf.proc; const all=videosByProcess(p);
+  const chOrder={hitori:0,polepole:1,odo:2};
   let vids=all.slice();
-  if(_pf.diff!=='all')vids=vids.filter(v=>{const d=v.difficulty||3;return _pf.diff==='easy'?d<=2:_pf.diff==='mid'?d===3:d>=4;});
-  if(_pf.method!=='all')vids=vids.filter(v=>(v.methods||[]).includes(_pf.method));
-  vids.sort((a,b)=>_pf.sort==='easy'?(a.difficulty||3)-(b.difficulty||3):(b.date||'').localeCompare(a.date||''));
-  const methods=[...new Set(all.flatMap(v=>v.methods||[]))].sort();
-  const opt=(val,cur,label)=>`<option value="${val}" ${val===cur?'selected':''}>${label}</option>`;
-  const rows=vids.map(v=>`<tr><td><a onclick="go('video/${v.id}')"><b>${esc(v.series||'')}</b><br>${esc(v.title)}</a>${badgesHtml(v)}</td>
-     <td>${(v.methods||[]).slice(0,6).map(m=>`<span class="chip m">${esc(m)}</span>`).join('')}</td><td>${(v.rooms||[]).map(esc).join('・')}</td></tr>`).join('')
-     ||`<tr><td colspan="3"><div class="emptynote">条件に合う動画がありません</div></td></tr>`;
+  if(_pf.chan!=='all')vids=vids.filter(v=>(v.channel||'hitori')===_pf.chan);
+  vids.sort((a,b)=>_pf.sort==='new'?(b.date||'').localeCompare(a.date||''):((chOrder[a.channel||'hitori']-chOrder[b.channel||'hitori'])||(a.difficulty||3)-(b.difficulty||3)));
+  const chCount=c=>all.filter(v=>(v.channel||'hitori')===c).length;
+  const chip=(c,label)=>`<span class="cfchip ${_pf.chan===c?'on':''}" onclick="pfChan('${c}')">${label}${c!=='all'?` ${chCount(c)}`:''}</span>`;
+  const rows=vids.map(v=>`<tr><td><a onclick="go('video/${v.id}')"><b>${esc(v.title)}</b></a>
+       <div class="vrow-ch">${chanBadge(v)}${(v.methods||[]).slice(0,3).map(m=>commonTag(m,'method')).filter(Boolean).slice(0,2).join('')}</div>${badgesHtml(v)}</td>
+     <td>${(v.rooms||[]).map(esc).join('・')}</td></tr>`).join('')
+     ||`<tr><td colspan="2"><div class="emptynote">条件に合う動画がありません</div></td></tr>`;
   render(`${cr(clink('','START'),clink('procs','工程'),esc(p))}
   <h1>${esc(p)}</h1>
-  <div class="filters">
-    <select onchange="_pf.diff=this.value;renderProcess()">${opt('all',_pf.diff,'難易度：すべて')}${opt('easy',_pf.diff,'やさしい ★1-2')}${opt('mid',_pf.diff,'ふつう ★3')}${opt('hard',_pf.diff,'むずかしい ★4-5')}</select>
-    <select onchange="_pf.method=this.value;renderProcess()"><option value="all">工法：すべて</option>${methods.map(m=>`<option ${m===_pf.method?'selected':''}>${esc(m)}</option>`).join('')}</select>
-    <select onchange="_pf.sort=this.value;renderProcess()">${opt('easy',_pf.sort,'やさしい順')}${opt('new',_pf.sort,'新しい順')}</select>
-  </div>
+  <div class="lead">3チャンネル横断で「${esc(p)}」の動画。チャンネルバッジと定番/独自タグつき。<a onclick="go('compare')">工法の定番/独自の一覧 ${ic('chevron',12)}</a></div>
+  <div class="chanfilter">${chip('all','すべて '+all.length)}${chip('hitori','ひとりでできるマン')}${chip('polepole','ポレポレ')}${chip('odo','大家研究所')}
+    <span class="cfchip" onclick="_pf.sort=_pf.sort==='new'?'ch':'new';renderProcess()">${ic('clock',13)}${_pf.sort==='new'?'新しい順':'チャンネル順'}</span></div>
   <h2><span class="bar"></span>この工程の動画（${vids.length}本）</h2>
-  <div class="tablewrap"><table class="tbl"><tr><th>動画</th><th>工法</th><th>部屋</th></tr>${rows}</table></div>
-  <div class="lead" style="margin-top:14px">各動画を開くと、作業ごとに「何分何秒〜」の区間で頭出し・Before/Afterも見られます。</div>`);
+  <div class="tablewrap"><table class="tbl"><tr><th>動画</th><th>部屋</th></tr>${rows}</table></div>
+  <div class="lead" style="margin-top:14px">各動画を開くと、作業ごとに区間頭出し（ひとり＝画像・Before/After／他2ch＝YouTube時間リンク）。</div>`);
 }
 
 /* ===== 動画ページ ===== */
@@ -1032,7 +1068,7 @@ function videoPage(id){
     ${v.hasImg?`<a onclick="jump('s-ba')">Before→After</a>`:''}<a onclick="jump('s-steps')">各作業の手順</a><a onclick="jump('s-tools')">道具・材料</a>${v.cost?`<a onclick="jump('s-cost')">費用のめやす</a>`:''}${(v.time&&v.time.waits&&v.time.waits.length)?`<a onclick="jump('s-wait')">所要・待ち時間</a>`:''}<a onclick="jump('s-caut')">失敗・注意</a>
     <a onclick="jump('s-deps')">前後の工程</a><a onclick="jump('s-note')">自分メモ</a>
     <button class="btn" style="width:100%;margin-top:10px" onclick="window.print()">${ic('ext',14)} 印刷 / PDF</button></aside>`;
-  render(`${cr(clink('','START'),clink('procs','工程'),`<a onclick="go('process/${encodeURIComponent(v.processes[0])}')">${esc(v.processes.join('・'))}</a>`,'動画')}
+  render(`${cr(clink('','START'),clink('procs','工程'),(v.processes&&v.processes.length)?`<a onclick="go('process/${encodeURIComponent(v.processes[0])}')">${esc(v.processes.join('・'))}</a>`:esc((D.channels[v.channel]||{}).name||''),'動画')}
   <h1>${esc(v.title)}</h1>
   <div class="lead">${esc(v.series||'')} ／ ${fmt(v.durationSec)} ／ ${esc(v.date)} ／ 難易度 ${'★'.repeat(v.difficulty)}${'☆'.repeat(5-v.difficulty)}</div>
   <div class="chips">${v.processes.map(x=>`<span class="chip">${ic(procIcon(x),15)}${esc(x)}</span>`).join('')}${v.rooms.map(x=>`<span class="chip">${ic('door',15)}${esc(x)}</span>`).join('')}${(v.methods||[]).map(x=>`<span class="chip m">${esc(x)}</span>`).join('')}</div>
@@ -1536,21 +1572,33 @@ function fillFails(d){
 }
 
 /* ===== 検索 ===== */
-function onSearch(q){
-  q=q.trim();if(!q){router();return}
-  const ql=q.toLowerCase();const hits=[];
+let _sq='',_sqChan='all';
+function onSearch(q){_sq=q;_sqChan='all';renderSearch();}
+function sqChan(c){_sqChan=c;renderSearch();}
+function renderSearch(){
+  const q=(_sq||'').trim();if(!q){router();return}
+  const ql=q.toLowerCase();let hits=[];
   D.videos.forEach(v=>{
-    const hay=[v.title,v.series,...(v.rooms||[]),...(v.processes||[]),...(v.methods||[]),v.goal,v.goalFrom,...(v.cautions||[]),...(v.tools||[]).map(t=>t.name),...(v.steps||[]).flatMap(s=>[s.name,...(s.tips||[]),...(s.how||[])])].join(' ').toLowerCase();
+    const hay=[v.title,v.series,...(v.rooms||[]),...(v.processes||[]),...(v.methods||[]),...(v.materials||[]),v.goal,v.goalFrom,...(v.cautions||[]),...(v.tools||[]).map(t=>t.name||t),...(v.steps||[]).flatMap(s=>[s.name,...(s.tips||[]),...(s.how||[])])].join(' ').toLowerCase();
     if(hay.includes(ql)){
       const sh=(v.steps||[]).filter(s=>[s.name,...(s.tips||[]),...(s.how||[])].join(' ').toLowerCase().includes(ql));
       hits.push({v,sh});
     }
   });
+  const cc=c=>hits.filter(h=>(h.v.channel||'hitori')===c).length;
+  let shown=_sqChan==='all'?hits:hits.filter(h=>(h.v.channel||'hitori')===_sqChan);
+  const chOrder={hitori:0,polepole:1,odo:2};
+  shown.sort((a,b)=>chOrder[a.v.channel||'hitori']-chOrder[b.v.channel||'hitori']);
+  const chip=(c,label)=>`<span class="cfchip ${_sqChan===c?'on':''}" onclick="sqChan('${c}')">${label}${c!=='all'?' '+cc(c):''}</span>`;
+  const timeLink=(v,s)=> v.channel==='hitori'
+    ? (s.clips||[]).map(c=>`<a href="${ytUrl(v.id,c[0])}" target="_blank">${fmt(c[0])}〜</a>`).join(' / ')
+    : (s.timeSec?`<a href="${ytUrl(v.id,s.timeSec)}" target="_blank">${fmt(s.timeSec)}〜</a>`:'');
   paintNav('');
-  app.innerHTML=`<div class="crumb">検索：「${esc(q)}」</div><h1>検索結果 ${hits.length}件</h1>`+
-    (hits.length?hits.map(({v,sh})=>`<div class="step"><div class="step-head"><span class="step-name"><a onclick="go('video/${v.id}')">${esc(v.title)}</a></span></div>
-      <div class="purpose">${esc(v.series||'')}</div>
-      ${sh.map(s=>`<div class="tip">${ic('bulb',16)}<span>${esc(s.name)} ${(s.clips||[]).map(c=>`<a href="${ytUrl(v.id,c[0])}" target="_blank">${fmt(c[0])}–${fmt(c[1])}</a>`).join(' / ')}</span></div>`).join('')}</div>`).join(''):'<div class="emptynote">該当なし</div>');
+  app.innerHTML=`<div class="crumb">検索：「${esc(q)}」</div><h1>検索結果 ${hits.length}件</h1>
+    <div class="chanfilter">${chip('all','すべて '+hits.length)}${chip('hitori','ひとりでできるマン')}${chip('polepole','ポレポレ')}${chip('odo','大家研究所')}</div>`+
+    (shown.length?shown.map(({v,sh})=>`<div class="step"><div class="step-head"><span class="step-name"><a onclick="go('video/${v.id}')">${esc(v.title)}</a></span></div>
+      <div class="vrow-ch">${chanBadge(v)}${(v.processes||[]).slice(0,4).map(p=>`<span class="chip" style="--cc:${procColor(p)}">${ic(procIcon(p),12)}${esc(p)}</span>`).join('')}</div>
+      ${sh.slice(0,4).map(s=>`<div class="tip">${ic('bulb',16)}<span>${esc(s.name)} ${timeLink(v,s)}</span></div>`).join('')}</div>`).join(''):'<div class="emptynote">このチャンネルには該当なし</div>');
 }
 
 router();
