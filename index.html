@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>リフォーム手順書 — ひとりでできるマンDIY</title>
+<title>リフォーム手順書 — 激安・空き家DIY 3チャンネルの非公式まとめ</title>
 <style>
 :root,:root[data-theme="light"]{
   --bg:#eef0f8; --panel:#ffffff; --panel2:#eef1f8; --ink:#141620; --sub:#515770; --line:#dfe2ee;
@@ -541,12 +541,12 @@ h3{font-size:14.5px;margin:16px 0 6px;font-weight:800}
   <aside class="sidebar">
     <div class="brand" onclick="go('')">
       <div class="logo" id="brandlogo"></div>
-      <div><b>リフォーム手順書</b><small>ひとりでできるマンDIY</small></div>
+      <div><b>リフォーム手順書</b><small>3チャンネルの非公式まとめ</small></div>
     </div>
     <div class="side-search"><span id="searchic"></span><input id="search" placeholder="作業・道具・部屋・症状を検索" oninput="onSearch(this.value)"></div>
     <nav class="nav" id="nav"></nav>
     <button class="themebtn" id="themebtn" onclick="toggleTheme()"></button>
-    <div class="side-foot">全130本を手順書化するプロジェクト。各動画の作業を分単位で解説します。</div>
+    <div class="side-foot">激安・空き家DIYの3チャンネルの動画を、作業ごとの手順書にした非公式のまとめです。各チャンネルの公式サイトではありません。</div>
   </aside>
   <main class="main">
     <div class="mtop">
@@ -957,7 +957,9 @@ function home(){
   ${secs}
   <h2><span class="bar" style="flex:none"></span>マイ進捗（あなたの家）</h2>
   <div class="lead">部屋を選んでチェックを進めると、ここに進み具合と「次にやること」が出ます。</div>
-  <div class="dash">${rowsD}</div>`);
+  <div class="dash">${rowsD}</div>
+  <h2><span class="bar" style="flex:none"></span>このサイトについて</h2>
+  <div class="lead" style="background:var(--panel2);border-radius:14px;padding:14px 16px">このサイトは、<a href="${(D.channels.hitori||{}).url}" target="_blank">ひとりでできるマンDIY</a>・<a href="${(D.channels.polepole||{}).url}" target="_blank">ポレポレDIY</a>・<a href="${(D.channels.odo||{}).url}" target="_blank">DIY大家研究所</a>の動画をもとに、作業の手順をまとめた<b>非公式</b>のまとめです。各チャンネルの公式サイトではありません。<br>動画と画像の権利は、各チャンネルにあります。くわしいやり方は、元の動画で確かめてください。<br>電気・ガスなど資格が要る作業は、資格のある業者に頼んでください。作業は、ご自身の判断と責任で行ってください。</div>`);
 }
 
 /* ===== 部屋一覧 ===== */
@@ -1129,7 +1131,7 @@ function videoPage(id){
     <h2 id="s-judge"><span class="bar"></span>ゴールをどこから見据えるか</h2><div>${gloss(esc(v.goalFrom))}</div>
     ${mtbl?`<div class="tablewrap" style="margin-top:12px"><table class="tbl"><tr><th>部屋</th><th>床の診断</th><th>選んだ工法</th><th>理由</th></tr>${mtbl}</table></div>`:''}
     <h2 id="s-flow"><span class="bar"></span>全体の順番</h2><div class="flowline">${flow}</div>
-    ${(v.methods&&v.methods.length)?`<h2 id="s-method"><span class="bar"></span>この動画の工法（<span class="ctag ct-std">定番</span>=両チャンネル共通／<span class="ctag ct-uniq">独自</span>=その人の流儀）</h2>
+    ${(v.methods&&v.methods.length)?`<h2 id="s-method"><span class="bar"></span>この動画の工法（<span class="ctag ct-std">定番</span>=2チャンネル以上で共通／<span class="ctag ct-uniq">独自</span>=その人の流儀）</h2>
       <div class="methodlist">${v.methods.map(m=>`<div class="mrow">${commonTag(m,'method')||'<span class="ctag ct-none">—</span>'}<span>${gloss(esc(m))}</span></div>`).join('')}<div class="muted" style="margin-top:6px;font-size:12px"><a onclick="go('compare')">${ic('search',13)} 定番/独自の一覧を見る</a></div></div>`:''}
     <h2 id="s-steps"><span class="bar"></span>各作業の手順${(v.channel||'hitori')!=='hitori'?'（時間リンクでYouTubeへ）':'（画像・区間ボタンで頭出し）'}</h2>
     ${(v.channel||'hitori')!=='hitori'?'':`<button class="dobtn" onclick="go('do/${v.id}/0')">${ic('play',15,true)} 現場モードで開く（1作業ずつ進める）</button>`}${steps}

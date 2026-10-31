@@ -3,3 +3,6 @@
 .AppleDouble
 node_modules/
 *.log
+
+# Claude Code の作業フォルダ用の設定（公開しない）
+.claude/
